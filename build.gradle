@@ -1,16 +1,11 @@
-//rootProject.name = 'lillero'
-
-// Apply the java-library plugin for API and implementation separation.
 apply plugin: 'java-library'
 
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 repositories {
-    // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
 
 dependencies {
-    // implementation 'org.ow2.asm:asm-tree:9.4'
     implementation 'org.ow2.asm:asm-commons:9.4'
-    // implementation 'org.ow2.asm:asm-util:9.4'
 }
