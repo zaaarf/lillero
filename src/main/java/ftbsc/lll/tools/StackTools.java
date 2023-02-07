@@ -1,11 +1,9 @@
 package ftbsc.lll.tools;
 
-import com.sun.istack.internal.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
 import java.util.Comparator;
-import java.util.Objects;
 
 /**
  * Various methods for manipulating the stack.
@@ -23,7 +21,7 @@ public class StackTools implements Opcodes {
 	 * @param args nodes containing instructions to load the constructor arguments, in the right order
 	 * @return an instruction list containing the opcodes needed to create the new object and load it on the stack.
 	 */
-	public static InsnList instantiate(String name, String desc, @Nullable AbstractInsnNode... args) {
+	public static InsnList instantiate(String name, String desc, AbstractInsnNode... args) {
 		InsnSequence is = new InsnSequence();
 		is.add(args);
 		return instantiate(name, desc, is);
@@ -39,7 +37,7 @@ public class StackTools implements Opcodes {
 	 * @param args a list of instructions loading the constructor arguments onto the stack in the correct order
 	 * @return an instruction list containing the opcodes needed to create the new object and load it on the stack.
 	 */
-	public static InsnList instantiate(String name, String desc, @Nullable InsnList args) {
+	public static InsnList instantiate(String name, String desc, InsnList args) {
 		InsnSequence list = new InsnSequence();
 		list.add(new TypeInsnNode(NEW, name), new InsnNode(DUP));
 		if (args != null) list.add(args);
