@@ -44,10 +44,12 @@ public interface IInjector {
 	 * compiles that information, as well as the return type, in as little space as
 	 * possible.
 	 * Examples:
-	 * (IF)V - returns void, takes in int and float
-	 * (Ljava/lang/Object;)I - returns int, takes in a java.lang.Object
-	 * (ILjava/lang/String;)[I - returns int[], takes in an int and a String
-	 * See <a href="https://asm.ow2.io/asm4-guide.pdf">https://asm.ow2.io/asm4-guide.pdf</a> for a more detailed explanation.
+	 * <ul>
+	 *  <li>(IF)V - returns void, takes in int and float</li>
+	 *  <li>(Ljava/lang/Object;)I - returns int, takes in a java.lang.Object</li>
+	 *  <li>(ILjava/lang/String;)[I - returns int[], takes in an int and a String</li>
+	 * </ul>
+	 * See ASM's <a href="https://asm.ow2.io/asm4-guide.pdf">documentation</a> for a more detailed explanation.
 	 * @return descriptor of method to target.
 	 */
 	String methodDesc();

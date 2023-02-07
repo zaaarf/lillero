@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Builds a method descriptor for you.
+ * See the <a href="https://asm.ow2.io/asm4-guide.pdf">documentation</a> to better understand what this is.
  * Parameters must be given in a specific order.
  * Return type should always be specified for clarity, but defaults to void.
  */
