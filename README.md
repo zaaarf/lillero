@@ -1,27 +1,41 @@
-# lillero
-*don't do coremods*
+# Lillero
+> ### Don't do coremods
 
-A simple and slim ASM patching framework, allowing to modify block game code.
+Lillero is a lightweight and simple ASM patching framework, empowering you to easily modify block game (byte)code, dunking on all the naysayers who said you absolutely had to use Mixin
 
 ## How
-This library provides the core interface: `IInjector`. All patches which implement this interface and are defined as services will be loaded and applied at startup.
+This library provides the core interface, `IInjector`, as well as a small set of utils to make your life easier. All patches should implement `IInjector` and be declared as [services](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html).
+
+The following `IInjector` methods *must* be implemented
 
 Some methods must be implemented, specifying which class and method will be patched:
- * `targetClass()` : returns full name of class to patch (such as `net.minecraft.client.Minecraft`)
- * `methodName()`  : returns name (Searge obfuscated) of method to patch
- * `methodDesc()`  : returns descriptor (arguments and return type) of method to patch
- * `inject(ClassNode clazz, MethodNode method)` : will be invoked providing correct class and method. This is where the actual patching happens
-Some extra methods should also be implemented to help identify your patch:
+ * `targetClass()`: returns the *fully qualified name* of the class to patch (example: `net.minecraft.client.Minecraft`).
+ * `methodName()`: returns the "Searge name" of the method to patch.
+ * `methodDesc()`: returns descriptor (arguments and return type) of method to patch.
+ * `inject(ClassNode clazz, MethodNode method)`: will be invoked providing you the ClassNode and MethodNode you requested. This is where the actual patching will happen.
+
+There's some more optional methods you *don't have to* implement, but really should because they will make your life considerably easier when it's time to debug:
  * `name()`   : returns patch name
  * `reason()` :  returns patch description
 
-To make your classes service providers, a simple text file should be defined under `src/main/resources/META-INF/services` in your mod project: `ftbsc.lll.IInjector`. Inside such file, put full class paths of your patches.
+Finally, you should mark your classes as service providers, by creating a text file called `ftbsc.lll.IInjector` in `src/main/resources/META-INF/services` on your project. Inside, put the fully qualified names of your patches (example: `ftbsc.bscv.asm.patches.TestPatch$TickPatch`).
 
-To load patches created with this library, a Launch Plugin loader is necessary (such as our [lillero-loader](https://git.fantabos.co/lillero-loader/))
+If you use Gradle (you do) don't forget to add this library as a dependency in your `build.gradle`:
+
+```groovy
+repositories {
+	maven { url = 'https://maven.fantabos.co' }
+}
+dependencies {
+    implementation 'ftbsc:lll:0.0.3'
+}
+```
+
+**You are going to need a loader to use patches created with this library**. You can use our [lillero-loader](https://git.fantabos.co/lillero-loader/) or write your own: as long as it uses `IInjector` as patch interface, it won't break compatibility.
 
 ### Example
+The following is an example patch, located at `src/main/java/example/patches/SamplePatch.java`:
 ```java
-// file src/main/java/example/patches/SamplePatch.java
   package example.patches;
   import ftbsc.lll.IInjector;
   public class SamplePatch implements IInjector {
@@ -35,7 +49,15 @@ To load patches created with this library, a Launch Plugin loader is necessary (
       main.instructions.insert(insnList);
     }
   }
+```
 
-// file src/main/resources/META-INF/services/ftbsc.lll.IInjector
+The patch will crash the game with a NegativeArraySizeException as soon as it's done loading - so you know it's working.
+
+The following is the service registration file, located at `src/main/resources/META-INF/services/ftbsc.lll.IInjector`:
+```
   example.patches.SamplePatch
 ```
+
+Happy patching!
+
+(it won't be happy)
