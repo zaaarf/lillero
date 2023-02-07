@@ -22,20 +22,20 @@ To load patches created with this library, a Launch Plugin loader is necessary (
 ### Example
 ```java
 // file src/main/java/example/patches/SamplePatch.java
-package example.patches;
-import ftbsc.lll.IInjector;
-public class SamplePatch implements IInjector {
-	public String name()        { return "SamplePatch"; }
-	public String targetClass() { return "net.minecraft.client.Minecraft"; }
-	public String methodName()  { return "func_71407_l"; } // tick()
-	public String methodDesc()  { return "()V"; }
-	public void inject(ClassNode clazz, MethodNode main) {
-		InsnList insnList = new InsnList();
-		insnList.add(new InsnNode(POP));
-		main.instructions.insert(insnList);
+	package example.patches;
+	import ftbsc.lll.IInjector;
+	public class SamplePatch implements IInjector {
+		public String name()        { return "SamplePatch"; }
+		public String targetClass() { return "net.minecraft.client.Minecraft"; }
+		public String methodName()  { return "func_71407_l"; } // tick()
+		public String methodDesc()  { return "()V"; }
+		public void inject(ClassNode clazz, MethodNode main) {
+			InsnList insnList = new InsnList();
+			insnList.add(new InsnNode(POP));
+			main.instructions.insert(insnList);
+		}
 	}
-}
 
 // file src/main/resources/META-INF/services/ftbsc.lll.IInjector
-example.patches.SamplePatch
+	example.patches.SamplePatch
 ```
