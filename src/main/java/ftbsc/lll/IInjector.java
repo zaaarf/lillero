@@ -19,7 +19,7 @@ public interface IInjector {
 	/**
 	 * @return reason for this patch, for logging
 	 */
-	default String reason() { return ""; }
+	default String reason() { return "No reason specified"; }
 
 	/**
 	 * This is used by the Launch Plugin to identify which classes should be
@@ -47,7 +47,7 @@ public interface IInjector {
 	 * (IF)V - returns void, takes in int and float
 	 * (Ljava/lang/Object;)I - returns int, takes in a java.lang.Object
 	 * (ILjava/lang/String;)[I - returns int[], takes in an int and a String
-	 * See <a>https://asm.ow2.io/asm4-guide.pdf</a> for a more detailed explanation.
+	 * See <a href="https://asm.ow2.io/asm4-guide.pdf">https://asm.ow2.io/asm4-guide.pdf</a> for a more detailed explanation.
 	 * @return descriptor of method to target.
 	 */
 	String methodDesc();
