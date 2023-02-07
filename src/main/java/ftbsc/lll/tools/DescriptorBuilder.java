@@ -1,6 +1,6 @@
 package ftbsc.lll.tools;
 
-import jdk.internal.org.objectweb.asm.Type;
+import org.objectweb.asm.Type;
 
 import java.util.ArrayList;
 
