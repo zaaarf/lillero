@@ -30,7 +30,7 @@ dependencies {
 }
 ```
 
-**You are going to need a loader to use patches created with this library**. You can use our [lillero-loader](https://git.fantabos.co/lillero-loader/) or write your own: as long as it uses `IInjector` as patch interface, it won't break compatibility.
+**You are going to need a loader to use patches created with this library**. You can use our [loader](https://git.fantabos.co/lillero-loader/) or write your own: as long as it uses `IInjector` as patch interface, it won't break compatibility.
 
 ### Example
 The following is an example patch, located at `src/main/java/example/patches/SamplePatch.java`:
