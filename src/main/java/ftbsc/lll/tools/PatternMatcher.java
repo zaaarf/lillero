@@ -215,6 +215,14 @@ public class PatternMatcher {
 		}
 
 		/**
+		 * Matches any kind of label.
+		 * @return the builder's state after the operation
+		 */
+		public Builder label() {
+			return check(i -> i.getType() == AbstractInsnNode.LABEL);
+		}
+
+		/**
 		 * Tells the pattern matcher to ignore LABEL instructions.
 		 * @return the builder's state after the operation
 		 */
