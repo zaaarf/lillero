@@ -105,7 +105,7 @@ public class PatternMatcher {
 	/**
 	 * The Builder object for PatternMatcher.
 	 */
-	private static class Builder {
+	public static class Builder {
 
 		/**
 		 * List of predicates the pattern has to match.
