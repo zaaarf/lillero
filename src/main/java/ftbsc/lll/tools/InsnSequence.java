@@ -8,7 +8,7 @@ import java.util.Objects;
 
 /**
  * Represents a sequence of instructions contained within two given nodes.
- * Extends InsnList, but provides additional flexibility.
+ * Extends InsnList, but provides additional flexibility and features.
  */
 public class InsnSequence extends InsnList {
 	/**
@@ -55,6 +55,16 @@ public class InsnSequence extends InsnList {
 	 */
 	public void add(AbstractInsnNode... nodes) {
 		for(AbstractInsnNode node : nodes)
+			this.add(node);
+	}
+
+	/**
+	 * Wraps InsnList's add() to ignore null values.
+	 * @param node to add
+	 */
+	@Override
+	public void add(AbstractInsnNode node) {
+		if(node != null)
 			super.add(node);
 	}
 
