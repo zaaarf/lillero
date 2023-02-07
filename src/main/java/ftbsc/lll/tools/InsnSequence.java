@@ -1,7 +1,6 @@
 package ftbsc.lll.tools;
 
 import ftbsc.lll.exception.InstructionMismatchException;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 
@@ -11,7 +10,7 @@ import java.util.Objects;
  * Represents a sequence of instructions contained within two given nodes.
  * Extends InsnList, but provides additional flexibility.
  */
-public class InsnSequence extends InsnList implements Opcodes {
+public class InsnSequence extends InsnList {
 	/**
 	 * Public constructor.
 	 * Must be given two non-null, connected nodes.
