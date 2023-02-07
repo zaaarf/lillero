@@ -94,8 +94,10 @@ public class PatternMatcher {
 					break;
 				} else break;
 			}
-			if(first != null && last != null)
-				return new InsnSequence(first, last);
+			if(first != null && last != null) {
+				if(reverse) return new InsnSequence(last, first);
+				else return new InsnSequence(first, last);
+			}
 		}
 		throw new PatternNotFoundException("Failed to find pattern!");
 	}
