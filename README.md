@@ -1,5 +1,4 @@
 # Lillero
-> ### Don't do coremods
 
 Lillero is a lightweight and simple ASM patching framework, empowering you to easily modify block game (byte)code, dunking on all the naysayers who said you absolutely had to use Mixin
 
@@ -58,6 +57,5 @@ The following is the service registration file, located at `src/main/resources/M
   example.patches.SamplePatch
 ```
 
-Happy patching!
-
-(it won't be happy)
+Happy patching! And remember...
+### "Don't do coremods!"
