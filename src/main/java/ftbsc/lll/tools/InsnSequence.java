@@ -13,6 +13,14 @@ import java.util.Objects;
 public class InsnSequence extends InsnList {
 	/**
 	 * Public constructor.
+	 * This creates an empty sequence.
+	 */
+	public InsnSequence() {
+		super();
+	}
+
+	/**
+	 * Public constructor.
 	 * Must be given two non-null, connected nodes.
 	 * @param startNode the starting node of the pattern
 	 * @param endNode the first node of the pattern
@@ -39,6 +47,15 @@ public class InsnSequence extends InsnList {
 		if(index > size())
 			throw new IndexOutOfBoundsException();
 		return this.toArray()[size() - index];
+	}
+
+	/**
+	 * Adds an array of nodes to the list.
+	 * @param nodes the nodes to add
+	 */
+	public void add(AbstractInsnNode... nodes) {
+		for(AbstractInsnNode node : nodes)
+			super.add(node);
 	}
 
 	/**
