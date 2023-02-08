@@ -85,13 +85,13 @@ public class PatternMatcher {
 				if(ignoreLabels && cur.getType() == AbstractInsnNode.LABEL) continue;
 				if(ignoreFrames && cur.getType() == AbstractInsnNode.FRAME) continue;
 				if(ignoreLineNumbers && cur.getType() == AbstractInsnNode.LINE) continue;
-				if(predicates.get(match).test(cur)) {
+				if(match == predicates.size()) {
+					last = cur.getPrevious(); //it was actually the preiovus run in this case
+					break;
+				} else if (predicates.get(match).test(cur)) {
 					match++;
 					if(first == null)
 						first = cur;
-				} else if(match == predicates.size()) {
-					last = cur.getPrevious(); //it was actually the preiovus run in this case
-					break;
 				} else break;
 			}
 			if(first != null && last != null) {
