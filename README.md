@@ -1,13 +1,11 @@
 # Lillero
 
-Lillero is a lightweight and simple ASM patching framework, empowering you to easily modify block game (byte)code, dunking on all the naysayers who said you absolutely had to use Mixin
+Lillero is a lightweight and simple ASM patching framework, empowering you to easily modify block game (byte)code, dunking on all the naysayers who said you absolutely had to use Mixin.
 
 ## How
 This library provides the core interface, `IInjector`, as well as a small set of utils to make your life easier. All patches should implement `IInjector` and be declared as [services](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html).
 
-The following `IInjector` methods *must* be implemented
-
-Some methods must be implemented, specifying which class and method will be patched:
+Some methods *must* be implemented, specifying which class and method will be patched:
  * `targetClass()`: returns the *fully qualified name* of the class to patch (example: `net.minecraft.client.Minecraft`).
  * `methodName()`: returns the "Searge name" of the method to patch.
  * `methodDesc()`: returns descriptor (arguments and return type) of method to patch.
