@@ -157,7 +157,7 @@ public class SrgMapper {
 			if(split.length == 2) //field
 				members.put(split[0], split[1]);
 			else if (split.length == 3) //method
-				members.put(split[0] + split[1], split[2]);
+				members.put(split[0] + " " + split[1], split[2]);
 		}
 	}
 }
