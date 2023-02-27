@@ -8,7 +8,7 @@ import java.util.Objects;
 
 /**
  * Represents a sequence of instructions contained within two given nodes.
- * Extends InsnList, but provides additional flexibility and features.
+ * Extends {@link InsnList}, but provides additional flexibility and features.
  */
 public class InsnSequence extends InsnList {
 	/**

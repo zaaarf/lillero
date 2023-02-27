@@ -56,15 +56,15 @@ public class PatternMatcher {
 	}
 
 	/**
-	 * @return the Builder object for this PatternMatcher
+	 * @return the Builder object for this {@link PatternMatcher}
 	 */
 	public static Builder builder() {
 		return new Builder();
 	}
 
 	/**
-	 * Tries to match the given pattern on a given MethodNode.
-	 * @param node the MethodNode to search
+	 * Tries to match the given pattern on a given {@link MethodNode}.
+	 * @param node the {@link MethodNode} to search
 	 * @return the InsnSequence object representing the matched pattern
 	 */
 	public InsnSequence find(MethodNode node) {
@@ -74,7 +74,7 @@ public class PatternMatcher {
 	/**
 	 * Tries to match the given pattern starting from a given node.
 	 * @param node the node to start the search on
-	 * @return the InsnSequence object representing the matched pattern
+	 * @return the {@link InsnSequence} object representing the matched pattern
 	 */
 	public InsnSequence find(AbstractInsnNode node) {
 		if(node != null) {
@@ -103,7 +103,7 @@ public class PatternMatcher {
 	}
 
 	/**
-	 * The Builder object for PatternMatcher.
+	 * The Builder object for {@link PatternMatcher}.
 	 */
 	public static class Builder {
 
@@ -134,7 +134,7 @@ public class PatternMatcher {
 
 		/**
 		 * Builds the pattern defined so far.
-		 * @return the built PatternMatcher
+		 * @return the built {@link PatternMatcher}
 		 */
 		public PatternMatcher build() {
 			return new PatternMatcher(predicates, reverse, ignoreLabels, ignoreFrames, ignoreLineNumbers);

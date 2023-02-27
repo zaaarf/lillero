@@ -26,9 +26,9 @@ public class SrgMapper {
 
 	/**
 	 * The public constructor.
-	 * Should be passed a Stream of Strings, one representing each line.
+	 * Should be passed a {@link Stream} of Strings, one representing each line.
 	 * Whether they contain line endings or not is irrelevant.
-	 * @param str a Stream of strings
+	 * @param str a {@link Stream} of strings
 	 */
 	public SrgMapper(Stream<String> str) {
 		AtomicReference<String> currentClass = new AtomicReference<>("");
@@ -129,7 +129,7 @@ public class SrgMapper {
 		private final String srgName;
 
 		/**
-		 * A Map tying each member's deobfuscatede name or signature to its
+		 * A {@link Map} tying each member's deobfuscatede name or signature to its
 		 * SRG name.
 		 */
 		private final Map<String, String> members;

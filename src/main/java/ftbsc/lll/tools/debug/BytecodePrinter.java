@@ -41,7 +41,7 @@ public class BytecodePrinter {
 	/**
 	 * Logs the bytecode of a method using the ASM logger.
 	 * @param main the method to print
-	 * @param logger the Log4j logger to print it with
+	 * @param logger the Log4j {@link Logger} to print it with
 	 */
 	public static void logAsmMethod(final MethodNode main, final Logger logger) {
 		for (AbstractInsnNode i : main.instructions.toArray())

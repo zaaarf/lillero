@@ -1,7 +1,7 @@
 package ftbsc.lll.exceptions;
 
 /**
- * Thrown when attempting to build an InstructionSequence between two
+ * Thrown when attempting to build an {@link ftbsc.lll.tools.InsnSequence} between two
  * unconnected nodes.
  */
 public class InstructionMismatchException extends RuntimeException {

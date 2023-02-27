@@ -1,7 +1,7 @@
 package ftbsc.lll.exceptions;
 
 /**
- * Thrown when failing to find a pattern
+ * Thrown when failing to find a pattern.
  */
 public class PatternNotFoundException extends RuntimeException {
 	public PatternNotFoundException(String message) {
