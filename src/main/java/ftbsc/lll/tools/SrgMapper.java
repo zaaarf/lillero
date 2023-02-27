@@ -1,5 +1,7 @@
 package ftbsc.lll.tools;
 
+import ftbsc.lll.exceptions.MappingNotFoundException;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -44,11 +46,14 @@ public class SrgMapper {
 	/**
 	 * Gets the SRG-obfuscated name of the class.
 	 * @param mcp the MCP (deobfuscated) internal name of the desired class
-	 * @return the SRG name of the class, or null if it wasn't found
+	 * @return the SRG name of the class
+	 * @throws MappingNotFoundException if no mapping is found
 	 */
 	public String getSrgClass(String mcp)  {
 		ObfuscationData data = mapper.get(mcp);
-		return data == null ? null : data.srgName;
+		if(data == null)
+			throw new MappingNotFoundException(mcp);
+		else return data.srgName;
 	}
 
 	/**
@@ -57,24 +62,26 @@ public class SrgMapper {
 	 * with a space, because that's how it is in .tsrg files.
 	 * @param mcpClass the MCP (deobfuscated) internal name of the container class
 	 * @param member the field name or method signature
-	 * @return the SRG name of the given member, or null if it wasn't found
+	 * @return the SRG name of the given member
+	 * @throws MappingNotFoundException if no mapping is found
 	 */
 	public String getSrgMember(String mcpClass, String member) {
 		ObfuscationData data = mapper.get(mcpClass);
 		if(data == null)
-			return null;
+			throw new MappingNotFoundException(mcpClass + "::" + member);
 		return data.members.get(member);
 	}
 
 	/**
 	 * Used internally. Gets the obfuscation data corresponding to the given SRG name.
-	 * @return the desired ObfuscationData object, or null if it wasn't found
+	 * @return the desired {@link ObfuscationData} object
+	 * @throws MappingNotFoundException if no {@link ObfuscationData} object is found
 	 */
 	private ObfuscationData getObfuscationData(String srg) {
 		for(ObfuscationData s : mapper.values())
 			if(s.srgName.equals(srg))
 				return s;
-		return null;
+		throw new MappingNotFoundException(srg);
 	}
 
 	/**
@@ -82,11 +89,11 @@ public class SrgMapper {
 	 * Due to how it's implemented, it's considerably less efficient than its
 	 * opposite operation.
 	 * @param srg the SRG-obfuscated internal name of the desired class
-	 * @return the MCP name of the class, or null if it wasn't found
+	 * @return the MCP name of the class
 	 */
 	public String getMcpClass(String srg) {
 		ObfuscationData data = getObfuscationData(srg);
-		return data == null ? null : data.mcpName;
+		return data.mcpName;
 	}
 
 	/**
@@ -95,12 +102,10 @@ public class SrgMapper {
 	 * opposite operation.
 	 * @param srgClass the SRG-obfuscated internal name of the container class
 	 * @param member the field name or method signature
-	 * @return the MCP name of the given member, or null if it wasn't found
+	 * @return the MCP name of the given member
 	 */
 	public String getMcpMember(String srgClass, String member) {
 		ObfuscationData data = getObfuscationData(srgClass);
-		if(data == null)
-			return null;
 		for(String mcp : data.members.keySet())
 			if(data.members.get(mcp).equals(member))
 				return mcp;
