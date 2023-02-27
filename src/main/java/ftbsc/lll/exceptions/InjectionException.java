@@ -1,4 +1,4 @@
-package ftbsc.lll.exception;
+package ftbsc.lll.exceptions;
 
 /**
  * Thrown when the injection of a patch fails.

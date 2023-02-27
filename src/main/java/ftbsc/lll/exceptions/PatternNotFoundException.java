@@ -1,4 +1,4 @@
-package ftbsc.lll.exception;
+package ftbsc.lll.exceptions;
 
 /**
  * Thrown when failing to find a pattern

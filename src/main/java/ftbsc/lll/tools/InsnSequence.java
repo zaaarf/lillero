@@ -1,6 +1,6 @@
 package ftbsc.lll.tools;
 
-import ftbsc.lll.exception.InstructionMismatchException;
+import ftbsc.lll.exceptions.InstructionMismatchException;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 

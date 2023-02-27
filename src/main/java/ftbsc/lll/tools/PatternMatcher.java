@@ -1,6 +1,6 @@
 package ftbsc.lll.tools;
 
-import ftbsc.lll.exception.PatternNotFoundException;
+import ftbsc.lll.exceptions.PatternNotFoundException;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 

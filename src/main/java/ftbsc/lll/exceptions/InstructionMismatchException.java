@@ -1,4 +1,4 @@
-package ftbsc.lll.exception;
+package ftbsc.lll.exceptions;
 
 /**
  * Thrown when attempting to build an InstructionSequence between two
