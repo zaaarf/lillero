@@ -24,7 +24,7 @@ repositories {
 	maven { url = 'https://maven.fantabos.co' }
 }
 dependencies {
-    implementation 'ftbsc:lll:0.2.1'
+    implementation 'ftbsc:lll:0.2.2'
 }
 ```
 
