@@ -112,6 +112,15 @@ public abstract class AbstractProxy {
 		}
 
 		/**
+		 * @param newModifier the new modifier value
+		 * @return the current state of the builder
+		 */
+		public Builder<T> setModifier(int newModifier) {
+			this.modifiers = newModifier;
+			return this;
+		}
+
+		/**
 		 * @return the built proxy object
 		 */
 		public abstract T build();
