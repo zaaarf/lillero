@@ -1,9 +1,11 @@
 package ftbsc.lll.tools;
 
 import ftbsc.lll.proxies.MethodProxy;
+import ftbsc.lll.proxies.FieldProxy;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
+import java.lang.reflect.Modifier;
 import java.util.Comparator;
 
 /**
@@ -86,9 +88,46 @@ public class StackTools implements Opcodes {
 	}
 
 	/**
-	 * Calls the given {@link MethodProxy} with the given opcode.
+	 * Builds a node setting the given {@link FieldProxy} to the value currently
+	 * on top of the stack.
+	 * @implSpec if the field is not static, you are to load the containing
+	 *           object onto the stack the value you want to assign.
+	 * @param f a {@link FieldProxy} representing the field to put.
+	 * @return a {@link FieldInsnNode} representing the built node.
+	 * @since 0.3.0
+	 */
+	public static FieldInsnNode put(FieldProxy f) {
+		return new FieldInsnNode(
+			Modifier.isStatic(f.getModifiers()) ? PUTSTATIC : PUTFIELD,
+			f.getParent().replace('.', '/'),
+			f.getSrgName(),
+			f.getDescriptor()
+		);
+	}
+
+	/**
+	 * Builds a node loading the given {@link FieldProxy} onto the stack.
+	 * @implSpec if the field is not static, you are to load the containing
+	 *           object onto the stack before calling this.
+	 * @param f a {@link FieldProxy} representing the field to load.
+	 * @return a {@link FieldInsnNode} representing the built node.
+	 * @since 0.3.0
+	 */
+	public static FieldInsnNode get(FieldProxy f) {
+		return new FieldInsnNode(
+			Modifier.isStatic(f.getModifiers()) ? GETSTATIC : GETFIELD,
+			f.getParent().replace('.', '/'),
+			f.getSrgName(),
+			f.getDescriptor()
+		);
+	}
+
+	/**
+	 * Builds a node calling the given {@link MethodProxy} with the given opcode.
 	 * @param m a {@link MethodProxy} representing the method to call.
-	 * @return a {@link MethodInsnNode} representing the build node.
+	 * @param opcode the opcode to use to call, must be one of INVOKEDYNAMIC,
+	 *               INVOKESPECIAL, INVOKEINTERFACE, INVOKESTATIC or INVOKEVIRTUAL.
+	 * @return a {@link MethodInsnNode} representing the built node.
 	 * @since 0.3.0
 	 */
 	public static MethodInsnNode call(MethodProxy m, int opcode) {
