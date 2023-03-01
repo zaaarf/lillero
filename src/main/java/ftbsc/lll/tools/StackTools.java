@@ -1,5 +1,6 @@
 package ftbsc.lll.tools;
 
+import ftbsc.lll.proxies.MethodProxy;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
@@ -62,7 +63,7 @@ public class StackTools implements Opcodes {
 	}
 
 	/**
-	 * Creates a new local variable, lasting in scope between two given LabelNodes.
+	 * Creates a new local variable, lasting in scope between two given {@link LabelNode}s.
 	 * @param method the method for which to declare the local variable
 	 * @param name the variable's name
 	 * @param desc the type descriptor for the new variable
@@ -82,5 +83,20 @@ public class StackTools implements Opcodes {
 		LocalVariableNode variable = new LocalVariableNode(name, desc, null, start, end, targetIndex);
 		method.localVariables.add(variable);
 		return targetIndex;
+	}
+
+	/**
+	 * Calls the given {@link MethodProxy} with the given opcode.
+	 * @param m a {@link MethodProxy} representing the method to call.
+	 * @return a {@link MethodInsnNode} representing the build node.
+	 * @since 0.3.0
+	 */
+	public static MethodInsnNode call(MethodProxy m, int opcode) {
+		return new MethodInsnNode(
+			opcode,
+			m.getParent().replace('.', '/'),
+			m.getSrgName(),
+			m.getDescriptor()
+		);
 	}
 }
