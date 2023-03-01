@@ -1,4 +1,10 @@
-apply plugin: 'java-library'
+plugins {
+    id 'java-library'
+    id 'com.palantir.git-version' version '0.13.0'
+}
+
+archivesBaseName = 'lll'
+version = gitVersion()
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
@@ -10,4 +16,8 @@ dependencies {
     implementation 'org.ow2.asm:asm-commons:9.4'
     implementation 'org.ow2.asm:asm-util:9.4'
     implementation 'org.apache.logging.log4j:log4j-api:2.15.0'
+}
+
+jar {
+    archiveFileName = "${jar.archiveBaseName.get()}-${project.version.split('-')[0]}.${jar.archiveExtension.get()}"
 }
