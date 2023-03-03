@@ -86,17 +86,16 @@ public class PatternMatcher {
 				if(ignoreFrames && cur.getType() == AbstractInsnNode.FRAME) continue;
 				if(ignoreLineNumbers && cur.getType() == AbstractInsnNode.LINE) continue;
 				if(match == predicates.size()) {
-					last = cur.getPrevious(); //it was actually the preiovus run in this case
-					break;
+					last = cur.getPrevious(); //it was actually the previous run in this case
+					if(first != null && last != null) {
+						if(reverse) return new InsnSequence(last, first);
+						else return new InsnSequence(first, last);
+					}
 				} else if (predicates.get(match).test(cur)) {
 					match++;
 					if(first == null)
 						first = cur;
-				} else break;
-			}
-			if(first != null && last != null) {
-				if(reverse) return new InsnSequence(last, first);
-				else return new InsnSequence(first, last);
+				} else match = 0;
 			}
 		}
 		throw new PatternNotFoundException("Failed to find pattern!");
