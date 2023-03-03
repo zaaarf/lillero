@@ -8,9 +8,9 @@ package ftbsc.lll.proxies;
 public abstract class AbstractProxy {
 
 	/**
-	 * The SRG name of the corresponding class member.
+	 * The name of the corresponding class member.
 	 */
-	private final String srgName;
+	private final String name;
 
 	/**
 	 * The fully qualified name (i.e. java.lang.String) of
@@ -25,10 +25,10 @@ public abstract class AbstractProxy {
 	private final int modifiers;
 
 	/**
-	 * @return the SRG name of the item
+	 * @return the name of the item
 	 */
-	public String getSrgName() {
-		return this.srgName;
+	public String getname() {
+		return this.name;
 	}
 
 	/**
@@ -53,12 +53,12 @@ public abstract class AbstractProxy {
 
 	/**
 	 * The private constructor, should be called by all classes extending this in theirs.
-	 * @param srgName the SRG name of the member
+	 * @param name the name of the member
 	 * @param modifiers the modifiers, as a packed int
 	 * @param parent the FQN of the parent class
 	 */
-	protected AbstractProxy(String srgName, int modifiers, String parent) {
-		this.srgName = srgName;
+	protected AbstractProxy(String name, int modifiers, String parent) {
+		this.name = name;
 		this.modifiers = modifiers;
 		this.parent = parent;
 	}
@@ -70,9 +70,9 @@ public abstract class AbstractProxy {
 	public abstract static class Builder<T extends AbstractProxy> {
 
 		/**
-		 * The SRG name of the member.
+		 * The name of the member.
 		 */
-		protected final String srgName;
+		protected final String name;
 
 		/**
 		 * The modifiers of the member, as a packed int.
@@ -86,10 +86,10 @@ public abstract class AbstractProxy {
 
 		/**
 		 * The constructor.
-		 * @param srgName the SRG name of the member
+		 * @param name the name of the member
 		 */
-		protected Builder(String srgName) {
-			this.srgName = srgName;
+		protected Builder(String name) {
+			this.name = name;
 			this.modifiers = 0;
 		}
 

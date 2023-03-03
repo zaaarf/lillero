@@ -29,13 +29,13 @@ public class FieldProxy extends AbstractProxy {
 
 	/**
 	 * A protected constructor, called only from the builder.
-	 * @param srgName the SRG name of the field
+	 * @param name the name of the field
 	 * @param modifiers the modifiers of the field
 	 * @param parent the FQN of the parent class of the field
 	 * @param typeDescriptor the type descriptor of the field
 	 */
-	FieldProxy(String srgName, int modifiers, String parent, String typeDescriptor) {
-		super(srgName, modifiers, parent);
+	FieldProxy(String name, int modifiers, String parent, String typeDescriptor) {
+		super(name, modifiers, parent);
 		this.typeDescriptor = typeDescriptor;
 	}
 
@@ -49,11 +49,11 @@ public class FieldProxy extends AbstractProxy {
 
 	/**
 	 * Returns a new instance of {@link FieldProxy.Builder}.
-	 * @param srgName the SRG name of the field
+	 * @param name the name of the field
 	 * @return the builder object for field proxies
 	 */
-	public static Builder builder(String srgName) {
-		return new Builder(srgName);
+	public static Builder builder(String name) {
+		return new Builder(name);
 	}
 
 	public static class Builder extends AbstractProxy.Builder<FieldProxy> {
@@ -64,10 +64,10 @@ public class FieldProxy extends AbstractProxy {
 
 		/**
 		 * The constructor of the builder, used only internally.
-		 * @param srgName the SRG name of the field
+		 * @param name the name of the field
 		 */
-		Builder(String srgName) {
-			super(srgName);
+		Builder(String name) {
+			super(name);
 		}
 
 		/**
@@ -107,7 +107,7 @@ public class FieldProxy extends AbstractProxy {
 		 */
 		@Override
 		public FieldProxy build() {
-			return new FieldProxy(this.srgName, this.modifiers, this.parent, this.typeDescriptor);
+			return new FieldProxy(this.name, this.modifiers, this.parent, this.typeDescriptor);
 		}
 	}
 }

@@ -22,18 +22,16 @@ public interface IInjector {
 	default String reason() { return "No reason specified"; }
 
 	/**
-	 * This is used by the Launch Plugin to identify which classes should be
-	 * altered, and on which classes should this injector operate.
+	 * This is used to identify which classes should be altered, and on which class
+	 * should this injector operate.
 	 * Class name should be dot-separated, for example "net.minecraft.client.Minecraft".
 	 * @return class to transform
 	 */
 	String targetClass();
 
 	/**
-	 * This is used by the Launch Plugin to identify the method to transform within
-	 * the class. It should return the Searge name of target.
-	 * Example: "func_71407_l", which is "tick()" on "Minecraft" class in 1.16.5
-	 *
+	 * This is used to identify the method to transform within the class.
+	 * It should return the name of target.
 	 * @return method to transform
 	 */
 	String methodName();
@@ -55,10 +53,11 @@ public interface IInjector {
 	String methodDesc();
 
 	/**
-	 * This method will be called once the Launch Plugin has identified the right class and
-	 * method to patch. Override this for the actual patching.
-	 * @param clazz  class node currently being patched
-	 * @param method node of method currently being patched
+	 * This method is to be called by the launcher after identifying the right class and
+	 * method to patch. The overriding method should contain the logic for actually
+	 * pathing.
+	 * @param clazz  the {@link ClassNode} currently being patched
+	 * @param method the {@link MethodNode} of method currently being patched
 	 */
 	void inject(ClassNode clazz, MethodNode method);
 }

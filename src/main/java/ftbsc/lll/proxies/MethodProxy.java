@@ -51,14 +51,14 @@ public class MethodProxy extends AbstractProxy {
 
 	/**
 	 * A protected constructor, called only from the builder.
-	 * @param srgName the SRG name of the method
+	 * @param name the name of the method
 	 * @param modifiers the modifiers of the method
 	 * @param parent the FQN of the parent class of the method
 	 * @param parameters the parameters of the method
 	 * @param returnType the return type of the method
 	 */
-	protected MethodProxy(String srgName, int modifiers, String parent, Object[] parameters, Object returnType) {
-		super(srgName, modifiers, parent);
+	protected MethodProxy(String name, int modifiers, String parent, Object[] parameters, Object returnType) {
+		super(name, modifiers, parent);
 		this.parameters = parameters;
 		this.returnType = returnType;
 		this.descriptorCache = null;
@@ -96,11 +96,11 @@ public class MethodProxy extends AbstractProxy {
 
 	/**
 	 * Returns a new instance of {@link MethodProxy.Builder}.
-	 * @param srgName the SRG name of the method
+	 * @param name the name of the method
 	 * @return the builder object for method proxies
 	 */
-	public static Builder builder(String srgName) {
-		return new Builder(srgName);
+	public static Builder builder(String name) {
+		return new Builder(name);
 	}
 
 	/**
@@ -119,10 +119,10 @@ public class MethodProxy extends AbstractProxy {
 
 		/**
 		 * The constructor of the builder, used only internally.
-		 * @param srgName the SRG name of the method
+		 * @param name the name of the method
 		 */
-		Builder(String srgName) {
-			super(srgName);
+		Builder(String name) {
+			super(name);
 			this.parameters = new ArrayList<>();
 			this.returnType = void.class;
 		}
@@ -177,7 +177,7 @@ public class MethodProxy extends AbstractProxy {
 		 */
 		@Override
 		public MethodProxy build() {
-			return new MethodProxy(srgName, modifiers, parent, parameters.toArray(), returnType);
+			return new MethodProxy(name, modifiers, parent, parameters.toArray(), returnType);
 		}
 	}
 
