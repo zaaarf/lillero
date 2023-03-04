@@ -1,6 +1,7 @@
 package ftbsc.lll.tools.nodes;
 
 import ftbsc.lll.proxies.FieldProxy;
+import ftbsc.lll.proxies.MethodProxy;
 import org.objectweb.asm.tree.FieldInsnNode;
 
 /**
@@ -14,6 +15,7 @@ public class FieldProxyInsnNode extends FieldInsnNode {
 	 * from a {@link FieldProxy}.
 	 * @param opcode the opcode, must be one of GETSTATIC, PUTSTATIC,
 	 *               GETFIELD or PUTFIELD
+	 * @param a {@link FieldProxy} representing the field to call
 	 */
 	public FieldProxyInsnNode(int opcode, FieldProxy proxy) {
 		super(

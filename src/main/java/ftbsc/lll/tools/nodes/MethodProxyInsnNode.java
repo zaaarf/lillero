@@ -15,8 +15,9 @@ public class MethodProxyInsnNode extends MethodInsnNode {
 	 * from a {@link MethodProxy}.
 	 * @param opcode the opcode, must be one of INVOKEVIRTUAL,
 	 *               INVOKESPECIAL, INVOKESTATIC or INVOKEINTERFACE
+	 * @param m a {@link MethodProxy} representing the method to call
 	 */
-	public MethodProxyInsnNode(MethodProxy m, int opcode) {
+	public MethodProxyInsnNode(int opcode, MethodProxy m) {
 		super(
 			opcode,
 			m.getParent().replace('.', '/'),
