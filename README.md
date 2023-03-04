@@ -1,15 +1,15 @@
 # Lillero
 
-Lillero is a lightweight and simple ASM patching framework, empowering you to easily modify block game (byte)code, dunking on all the naysayers who said you absolutely had to use Mixin.
+Lillero is a lightweight and simple ASM patching framework built on top of [ObjectWeb's ASM library](https://asm.ow2.io/).
 
 ## How
 This library provides the core interface, `IInjector`, as well as a small set of utils to make your life easier. All patches should implement `IInjector` and be declared as [services](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html).
 
 Some methods *must* be implemented, specifying which class and method will be patched:
  * `targetClass()`: returns the *fully qualified name* of the class to patch (example: `net.minecraft.client.Minecraft`).
- * `methodName()`: returns the "Searge name" of the method to patch.
+ * `methodName()`: returns the name of the method to patch.
  * `methodDesc()`: returns descriptor (arguments and return type) of method to patch.
- * `inject(ClassNode clazz, MethodNode method)`: will be invoked providing you the ClassNode and MethodNode you requested. This is where the actual patching will happen.
+ * `inject(ClassNode, MethodNode)`: will be invoked providing you the ClassNode and MethodNode you requested. This is where the actual patching will happen.
 
 There's some more optional methods you *don't have to* implement, but really should because they will make your life considerably easier when it's time to debug:
  * `name()`   : returns patch name
@@ -24,13 +24,20 @@ repositories {
 	maven { url = 'https://maven.fantabos.co' }
 }
 dependencies {
-    implementation 'ftbsc:lll:0.2.2'
+    implementation 'ftbsc:lll:<whatever the latest version is>'
 }
 ```
 
-**You are going to need a loader to use patches created with this library**. You can use our [loader](https://git.fantabos.co/lillero-loader/) or write your own: as long as it uses `IInjector` as patch interface, it won't break compatibility.
+You are going to need an appropriate loader to use Lillero patches: **this is just a library and does nothing by itself**. You need to make it work by loading services implementing the `IInjector` interface, and by calling their `inject(ClassNode, MethodNode)` methods with the appropriate parameters.
 
-### Example
+#### Tips specific to Minecraft patching
+* Use Searge names in every place you are told to use a name.
+	- Use MCP (AKA unobfuscated) names if you are running from ForgeGradle's runClient task.
+* Use our [loader](https://git.fantabos.co/lillero-loader/) that hooks into Forge's ModLauncher if you're writing a Forge mod.
+* Spare yourself some trouble, and use this [annotation processor](https://git.fantabos.co/lillero-processor/) to reduce boilerplate.
+* Make sure to dunk on all the naysayers who tried to force you to use Mixin!
+
+#### Example Minecraft patch
 The following is an example patch, located at `src/main/java/example/patches/SamplePatch.java`:
 ```java
   package example.patches;
@@ -48,7 +55,7 @@ The following is an example patch, located at `src/main/java/example/patches/Sam
   }
 ```
 
-The patch will crash the game with a NegativeArraySizeException as soon as it's done loading - so you know it's working.
+When loaded into Minecraf, this patch will crash the game with a NegativeArraySizeException as soon as it's done loading - so you know it's working.
 
 The following is the service registration file, located at `src/main/resources/META-INF/services/ftbsc.lll.IInjector`:
 ```
