@@ -6,7 +6,12 @@ plugins {
 archivesBaseName = 'lll'
 version = gitVersion()
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java {
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
+	withSourcesJar()
+	withJavadocJar()
+}
 
 repositories {
     mavenCentral()
