@@ -26,7 +26,7 @@ public class InsnSequence extends InsnList {
 	 */
 	public InsnSequence(AbstractInsnNode node) {
 		super();
-		super.add(node);
+		this.add(node);
 	}
 
 	/**
@@ -39,7 +39,7 @@ public class InsnSequence extends InsnList {
 		Objects.requireNonNull(startNode);
 		Objects.requireNonNull(endNode);
 		for(; startNode != endNode && startNode != null; startNode = startNode.getNext())
-			super.add(startNode);
+			this.add(startNode);
 		if (startNode == null)
 			throw new InstructionMismatchException("Nodes" + getFirst() + " and " + getLast() + " are not connected.");
 	}
@@ -69,13 +69,14 @@ public class InsnSequence extends InsnList {
 	}
 
 	/**
-	 * Wraps InsnList's add() to ignore null values.
+	 * Wraps InsnList's add() to throw an exception
+	 * when fed null values.
 	 * @param node to add
 	 */
 	@Override
 	public void add(AbstractInsnNode node) {
-		if(node != null)
-			super.add(node);
+		Objects.requireNonNull(node);
+		super.add(node);
 	}
 
 	/**
