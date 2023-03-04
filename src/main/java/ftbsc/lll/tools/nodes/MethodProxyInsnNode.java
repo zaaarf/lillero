@@ -21,7 +21,7 @@ public class MethodProxyInsnNode extends MethodInsnNode {
 		super(
 			opcode,
 			m.getParent().replace('.', '/'),
-			m.getSrgName(),
+			m.getName(),
 			m.getDescriptor()
 		);
 	}

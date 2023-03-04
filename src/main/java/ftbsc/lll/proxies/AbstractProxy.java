@@ -27,7 +27,7 @@ public abstract class AbstractProxy {
 	/**
 	 * @return the name of the item
 	 */
-	public String getname() {
+	public String getName() {
 		return this.name;
 	}
 
