@@ -1,6 +1,6 @@
 # Lillero
 
-Lillero is a lightweight and simple ASM patching framework built on top of [ObjectWeb's ASM library](https://asm.ow2.io/).
+Lillero is a lightweight and simple Java ASM patching framework built on top of [ObjectWeb's ASM library](https://asm.ow2.io/).
 
 ## How
 This library provides the core interface, `IInjector`, as well as a small set of utils to make your life easier. All patches should implement `IInjector` and be declared as [services](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html).
@@ -55,7 +55,7 @@ The following is an example patch, located at `src/main/java/example/patches/Sam
   }
 ```
 
-When loaded into Minecraf, this patch will crash the game with a NegativeArraySizeException as soon as it's done loading - so you know it's working.
+When loaded into Minecraft, this patch will crash the game with a NegativeArraySizeException as soon as it's done loading - so you know it's working.
 
 The following is the service registration file, located at `src/main/resources/META-INF/services/ftbsc.lll.IInjector`:
 ```
