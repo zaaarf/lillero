@@ -56,6 +56,9 @@ public class FieldProxy extends AbstractProxy {
 		return new Builder(name);
 	}
 
+	/**
+	 * A builder object for {@link FieldProxy}.
+	 */
 	public static class Builder extends AbstractProxy.Builder<FieldProxy> {
 		/**
 		 * The descriptor of the field's type.
