@@ -62,5 +62,4 @@ The following is the service registration file, located at `src/main/resources/M
   example.patches.SamplePatch
 ```
 
-Happy patching! And remember...
-### "Don't do coremods!"
+Happy patching! 
