@@ -20,6 +20,16 @@ public class InsnSequence extends InsnList {
 	}
 
 	/**
+	 * Public constructor for list with single item.
+	 * Must be given a single non-null node.
+	 * @param node the node in question
+	 */
+	public InsnSequence(AbstractInsnNode node) {
+		super();
+		super.add(node);
+	}
+
+	/**
 	 * Public constructor.
 	 * Must be given two non-null, connected nodes.
 	 * @param startNode the starting node of the pattern

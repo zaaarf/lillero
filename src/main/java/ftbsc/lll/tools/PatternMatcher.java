@@ -85,24 +85,24 @@ public class PatternMatcher {
 				if(ignoreLabels && cur.getType() == AbstractInsnNode.LABEL) continue;
 				if(ignoreFrames && cur.getType() == AbstractInsnNode.FRAME) continue;
 				if(ignoreLineNumbers && cur.getType() == AbstractInsnNode.LINE) continue;
-				if(predicates.get(match).test(cur)) {
-					match++;
-					if(first == null)
-						first = cur;
-				} else { //reset
-					first = null;
-					match = 0;
+				if(predicates.get(match) != null) {
+					if(predicates.get(match).test(cur)) {
+						match++;
+						if (first == null)
+							first = cur;
+					} else { //reset
+						first = null;
+						match = 0;
+					}
 				}
 				//check if we found the last one
 				if(match == predicates.size()) {
+					if(match == 0)
+						return new InsnSequence(cur); //match whatever
 					last = cur;
-					break;
+					if(reverse) return new InsnSequence(last, first); //we are matching backwards
+					else return new InsnSequence(first, last);
 				}
-			}
-			//only return value if we found both a start and an end
-			if(first != null && last != null) {
-				if(reverse) return new InsnSequence(last, first); //we are matching backwards
-				else return new InsnSequence(first, last);
 			}
 		}
 		throw new PatternNotFoundException("Failed to find pattern!");
