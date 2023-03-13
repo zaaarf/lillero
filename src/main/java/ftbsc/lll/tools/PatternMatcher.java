@@ -78,30 +78,24 @@ public class PatternMatcher {
 	 */
 	public InsnSequence find(AbstractInsnNode node) {
 		if(node != null) {
-			int match = 0;
-			AbstractInsnNode first = null;
-			AbstractInsnNode last = null;
+			AbstractInsnNode first;
+			AbstractInsnNode last;
 			for(AbstractInsnNode cur = node; cur != null; cur = reverse ? cur.getPrevious() : cur.getNext()) {
 				if(ignoreLabels && cur.getType() == AbstractInsnNode.LABEL) continue;
 				if(ignoreFrames && cur.getType() == AbstractInsnNode.FRAME) continue;
 				if(ignoreLineNumbers && cur.getType() == AbstractInsnNode.LINE) continue;
-				if(predicates.get(match) != null) {
-					if(predicates.get(match).test(cur)) {
-						match++;
-						if (first == null)
-							first = cur;
-					} else { //reset
-						first = null;
-						match = 0;
+				if(predicates.size() == 0)
+					return new InsnSequence(cur); //match whatever
+				first = cur;
+				last = cur;
+				for(int match = 0; match < predicates.size(); match++) {
+					if(last == null) break;
+					if(!predicates.get(match).test(last)) break;
+					if(match == predicates.size() - 1) {
+						if(reverse) return new InsnSequence(last, first); //we are matching backwards
+						else return new InsnSequence(first, last);
 					}
-				}
-				//check if we found the last one
-				if(match == predicates.size()) {
-					if(match == 0)
-						return new InsnSequence(cur); //match whatever
-					last = cur;
-					if(reverse) return new InsnSequence(last, first); //we are matching backwards
-					else return new InsnSequence(first, last);
+					last = reverse ? last.getPrevious() : last.getNext();
 				}
 			}
 		}

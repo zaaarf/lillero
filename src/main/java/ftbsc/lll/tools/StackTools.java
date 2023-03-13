@@ -43,7 +43,7 @@ public class StackTools implements Opcodes {
 	public static InsnList instantiate(String name, String desc, InsnList args) {
 		InsnSequence list = new InsnSequence();
 		list.add(new TypeInsnNode(NEW, name), new InsnNode(DUP));
-		if (args != null) list.add(args);
+		if(args != null) list.add(args);
 		list.add(new MethodInsnNode(INVOKESPECIAL, name, "<init>", desc, false));
 		return list;
 	}
