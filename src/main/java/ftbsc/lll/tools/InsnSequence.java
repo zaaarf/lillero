@@ -38,9 +38,11 @@ public class InsnSequence extends InsnList {
 	public InsnSequence(AbstractInsnNode startNode, AbstractInsnNode endNode) {
 		Objects.requireNonNull(startNode);
 		Objects.requireNonNull(endNode);
-		for(; startNode != endNode && startNode != null; startNode = startNode.getNext())
+		for(; startNode != null; startNode = startNode.getNext()) {
 			this.add(startNode);
-		if (startNode == null)
+			if(startNode == endNode) break;
+		}
+		if(startNode == null)
 			throw new InstructionMismatchException("Nodes" + getFirst() + " and " + getLast() + " are not connected.");
 	}
 
