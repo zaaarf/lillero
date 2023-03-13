@@ -1,11 +1,8 @@
 package ftbsc.lll.tools;
 
-import ftbsc.lll.proxies.MethodProxy;
-import ftbsc.lll.proxies.FieldProxy;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
-import java.lang.reflect.Modifier;
 import java.util.Comparator;
 
 /**
