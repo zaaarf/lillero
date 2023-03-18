@@ -75,23 +75,30 @@ public class MethodProxy extends AbstractProxy {
 			return this.descriptorCache;
 		DescriptorBuilder b = new DescriptorBuilder();
 		for(Object p : this.parameters)
-			addParameterToBuilder(b, p);
-		addParameterToBuilder(b, this.returnType);
+			addTypeToDescriptorBuilder(b, p, false);
+		addTypeToDescriptorBuilder(b, this.returnType, true);
 		this.descriptorCache = b.build();
 		return this.descriptorCache;
 	}
 
 	/**
-	 * A static method used internally to correctly insert a
+	 * A static method used internally to detect and correctly insert a
 	 * {@link TypeContainer} into a {@link DescriptorBuilder}.
 	 * @param b the {@link DescriptorBuilder}
 	 * @param p the {@link TypeContainer}
+	 * @param isReturnType whether it should be inserted as a return type
 	 */
-	private static void addParameterToBuilder(DescriptorBuilder b, Object p) {
+	private static void addTypeToDescriptorBuilder(DescriptorBuilder b, Object p, boolean isReturnType) {
 		if(p instanceof TypeContainer) {
 			TypeContainer param = (TypeContainer) p;
-			b.addParameter(param.fqn, param.arrayLevel);
-		} else b.addParameter((Class<?>) p);
+			if(isReturnType)
+				b.setReturnType(param.fqn, param.arrayLevel);
+			else b.addParameter(param.fqn, param.arrayLevel);
+		} else {
+			if(isReturnType)
+				b.setReturnType((Class<?>) p);
+			else b.addParameter((Class<?>) p);
+		}
 	}
 
 	/**

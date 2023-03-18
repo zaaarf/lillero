@@ -1,5 +1,7 @@
 package ftbsc.lll.proxies;
 
+import java.lang.reflect.Modifier;
+
 /**
  * Abstract proxy class, implementing common aspects
  * of {@link MethodProxy} and {@link FieldProxy}.
@@ -33,7 +35,7 @@ public abstract class AbstractProxy {
 
 	/**
 	 * @return the modifiers of the member, as a packed int
-	 * @see java.lang.reflect.Modifier
+	 * @see Modifier
 	 */
 	public int getModifiers() {
 		return this.modifiers;
