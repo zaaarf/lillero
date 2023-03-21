@@ -1,11 +1,12 @@
 package ftbsc.lll.proxies;
 
-import ftbsc.lll.tools.DescriptorBuilder;
 import org.objectweb.asm.Type;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
+import static ftbsc.lll.tools.DescriptorBuilder.nameToDescriptor;
 
 /**
  * A container for information about class methods to be used
@@ -16,23 +17,13 @@ public class MethodProxy extends AbstractProxy {
 
 	/**
 	 * The parameters of the method.
-	 * It holds fully qualified names for objects, and {@link Class}
-	 * objects for primitives.
 	 */
-	private final Object[] parameters;
+	public final Type[] parameters;
 
 	/**
 	 * The return type of the method.
-	 * It contains if it's an object, or a {@link Class}
-	 * object for primitives.
 	 */
-	private final Object returnType;
-
-	/**
-	 * Caches the the descriptor after generating it once for
-	 * performance.
-	 */
-	private String descriptorCache;
+	public final Type returnType;
 
 	/**
 	 * A public constructor, builds a proxy from a {@link Method}
@@ -40,13 +31,10 @@ public class MethodProxy extends AbstractProxy {
 	 * @param m the {@link Method} object corresponding to this.
 	 */
 	public MethodProxy(Method m) {
-		super(m.getName(), m.getModifiers(), Type.getInternalName(m.getDeclaringClass()));
-		List<Object> parameters = new ArrayList<>();
-		for(Class<?> p : m.getParameterTypes())
-			parameters.add(p.isPrimitive() ? p	: new TypeContainer(p));
-		this.parameters = parameters.toArray();
-		Class<?> returnType = m.getReturnType();
-		this.returnType = returnType.isPrimitive() ? returnType	: new TypeContainer(returnType);
+		super(m.getName(), Type.getType(m), m.getModifiers(), Type.getInternalName(m.getDeclaringClass()));
+		Type mt = Type.getType(m);
+		this.parameters = mt.getArgumentTypes();
+		this.returnType = mt.getReturnType();
 	}
 
 	/**
@@ -57,41 +45,10 @@ public class MethodProxy extends AbstractProxy {
 	 * @param parameters the parameters of the method
 	 * @param returnType the return type of the method
 	 */
-	protected MethodProxy(String name, int modifiers, String parent, Object[] parameters, Object returnType) {
-		super(name, modifiers, parent);
+	protected MethodProxy(String name, int modifiers, String parent, Type[] parameters, Type returnType) {
+		super(name, Type.getMethodType(returnType, parameters), modifiers, parent);
 		this.parameters = parameters;
 		this.returnType = returnType;
-		this.descriptorCache = null;
-	}
-
-	/**
-	 * Builds (or returns from cache if present)
-	 * the method's descriptor.
-	 * @return the method's descriptor
-	 */
-	@Override
-	public String getDescriptor() {
-		if(this.descriptorCache != null)
-			return this.descriptorCache;
-		DescriptorBuilder b = new DescriptorBuilder();
-		for(Object p : this.parameters)
-			addParameterToBuilder(b, p);
-		addParameterToBuilder(b, this.returnType);
-		this.descriptorCache = b.build();
-		return this.descriptorCache;
-	}
-
-	/**
-	 * A static method used internally to correctly insert a
-	 * {@link TypeContainer} into a {@link DescriptorBuilder}.
-	 * @param b the {@link DescriptorBuilder}
-	 * @param p the {@link TypeContainer}
-	 */
-	private static void addParameterToBuilder(DescriptorBuilder b, Object p) {
-		if(p instanceof TypeContainer) {
-			TypeContainer param = (TypeContainer) p;
-			b.addParameter(param.fqn, param.arrayLevel);
-		} else b.addParameter((Class<?>) p);
 	}
 
 	/**
@@ -110,12 +67,12 @@ public class MethodProxy extends AbstractProxy {
 		/**
 		 * The parameters of the method.
 		 */
-		private final List<Object> parameters;
+		private final List<Type> parameters;
 
 		/**
 		 * The return type of the method. Defaults to void.
 		 */
-		private Object returnType;
+		private Type returnType;
 
 		/**
 		 * The constructor of the builder, used only internally.
@@ -124,7 +81,7 @@ public class MethodProxy extends AbstractProxy {
 		Builder(String name) {
 			super(name);
 			this.parameters = new ArrayList<>();
-			this.returnType = void.class;
+			this.returnType = Type.getType(void.class);
 		}
 
 		/**
@@ -134,7 +91,7 @@ public class MethodProxy extends AbstractProxy {
 		 * @return the builder's state after the change
 		 */
 		public Builder addParameter(String fqn, int arrayLevel) {
-			this.parameters.add(new TypeContainer(fqn, arrayLevel));
+			this.parameters.add(Type.getType(nameToDescriptor(fqn, arrayLevel)));
 			return this;
 		}
 
@@ -145,7 +102,7 @@ public class MethodProxy extends AbstractProxy {
 		 * @return the builder's state after the change
 		 */
 		public Builder addParameter(Class<?> paramType) {
-			this.parameters.add(paramType);
+			this.parameters.add(Type.getType(paramType));
 			return this;
 		}
 
@@ -156,7 +113,7 @@ public class MethodProxy extends AbstractProxy {
 		 * @return the builder's state after the change
 		 */
 		public Builder setReturnType(String fqn, int arrayLevel) {
-			this.returnType = new TypeContainer(fqn, arrayLevel);
+			this.returnType = Type.getType(nameToDescriptor(fqn, arrayLevel));
 			return this;
 		}
 
@@ -167,7 +124,7 @@ public class MethodProxy extends AbstractProxy {
 		 * @return the builder's state after the change
 		 */
 		public Builder setReturnType(Class<?> returnType) {
-			this.returnType = returnType;
+			this.returnType = Type.getType(returnType);
 			return this;
 		}
 
@@ -177,47 +134,7 @@ public class MethodProxy extends AbstractProxy {
 		 */
 		@Override
 		public MethodProxy build() {
-			return new MethodProxy(name, modifiers, parent, parameters.toArray(), returnType);
-		}
-	}
-
-	/**
-	 * A container class, holding information about a given type.
-	 */
-	protected static class TypeContainer {
-		/**
-		 * The fully qualified name of the type.
-		 */
-		public final String fqn;
-
-		/**
-		 * The array level of the type.
-		 */
-		public final int arrayLevel;
-
-		/**
-		 * Public constructor for the class.
-		 * @param fqn the fully qualified name of the type
-		 * @param arrayLevel the array level of the type
-		 */
-		public TypeContainer(String fqn, int arrayLevel) {
-			this.fqn = fqn;
-			this.arrayLevel = arrayLevel;
-		}
-
-		/**
-		 * Public constructor for the class, extracting the
-		 * necessary information from a {@link Class} object.
-		 * @param clazz the class object
-		 */
-		public TypeContainer(Class<?> clazz) {
-			int arrayLevel = 0;
-			while(clazz.isArray()) {
-				arrayLevel++;
-				clazz = clazz.getComponentType();
-			}
-			this.arrayLevel = arrayLevel;
-			this.fqn = clazz.getCanonicalName();
+			return new MethodProxy(name, modifiers, parent, parameters.toArray(new Type[0]), returnType);
 		}
 	}
 }
