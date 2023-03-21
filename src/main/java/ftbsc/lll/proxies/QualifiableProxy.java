@@ -22,7 +22,7 @@ public abstract class QualifiableProxy extends AbstractProxy {
 
 	/**
 	 * The protected constructor, should be called by all classes extending this in theirs.
-	 * @param type the {@link Type} for the element
+	 * @param descriptor the descriptor for the element
 	 * @param modifiers the modifiers, as a packed int
 	 * @param parent the {@link QualifiableProxy} representing the parent of this element
 	 * @param fullyQualifiedName the FQN of the element
@@ -36,6 +36,7 @@ public abstract class QualifiableProxy extends AbstractProxy {
 	/**
 	 * Returns a {@link String} containing the FQN of the parent element
 	 * to this, which may represent a package or class.
+	 * @param fqn the fully qualified name of the element
 	 * @return the parent, or null if the parent was the root element
 	 */
 	protected static String extractParentFromFQN(String fqn) {
@@ -46,7 +47,8 @@ public abstract class QualifiableProxy extends AbstractProxy {
 	}
 
 	/**
-	 * Returns a {@link String} containing the simple name of the element
+	 * Returns a {@link String} containing the simple name of the element.
+	 * @param fqn the fully qualified name of the element
 	 * @return the simple name
 	 */
 	protected static String extractSimpleNameFromFQN(String fqn) {

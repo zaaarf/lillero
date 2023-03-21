@@ -139,6 +139,7 @@ public class MethodProxy extends AbstractProxy {
 		 * Sets the parent class of this method to the one described by the
 		 * fully qualified name and with the given modifiers.
 		 * @param parentFQN the fully qualified name of the parent
+		 * @param modifiers the modifiers of the parent
 		 * @return the builder's state after the change
 		 */
 		public Builder setParent(String parentFQN, int modifiers) {

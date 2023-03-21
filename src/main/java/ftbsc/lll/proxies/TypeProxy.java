@@ -23,6 +23,7 @@ public class TypeProxy extends QualifiableProxy {
 	 * @param descriptor the descriptor of the class
 	 * @param modifiers the modifiers of the class
 	 * @param parent the package containing this class
+	 * @param primitive whether the proxy is a primitive
 	 */
 	protected TypeProxy(String name, String descriptor, int modifiers, String parent, boolean primitive) {
 		super(descriptor, modifiers, PackageProxy.from(parent), String.format("%s.%s", name, parent));
@@ -34,6 +35,7 @@ public class TypeProxy extends QualifiableProxy {
 	 * @param name the name of the class
 	 * @param descriptor the descriptor of the element
 	 * @param modifiers the modifiers of the class
+	 * @param primitive whether the proxy is a primitive
 	 * @param containerClass the FQN of the parent class of the class
 	 */
 	protected TypeProxy(String name, String descriptor, int modifiers, QualifiableProxy containerClass, boolean primitive) {
@@ -45,6 +47,7 @@ public class TypeProxy extends QualifiableProxy {
 	 * Builds a {@link TypeProxy} from a {@link Type} and modifiers.
 	 * @param type the {@link Type} representing this Class
 	 * @param modifiers the modifiers of the class
+	 * @return the builty {@link TypeProxy}
 	 */
 	public static TypeProxy from(Type type, int modifiers) {
 		while(type.getSort() == Type.ARRAY)
@@ -60,11 +63,11 @@ public class TypeProxy extends QualifiableProxy {
 
 	/**
 	 * Builds a {@link TypeProxy} given only the fully-qualified name and modifiers.
+	 * If present, parent classes will be assumed to have {@code public} as their
+	 * only modifier.
 	 * @param fqn the fully qualified name of the desired class
 	 * @param arrayLevel the array level for this type
 	 * @param modifiers the access modifiers of the desired class
-	 * @implNote If present, parent classes will be assumed to have {@code public} as
-	 * 					 their only modifier.
 	 * @return the built {@link TypeProxy}
 	 */
 	protected static TypeProxy from(String fqn, int arrayLevel, int modifiers) {
