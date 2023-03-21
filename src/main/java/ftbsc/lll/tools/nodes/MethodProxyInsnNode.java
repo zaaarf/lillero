@@ -20,9 +20,9 @@ public class MethodProxyInsnNode extends MethodInsnNode {
 	public MethodProxyInsnNode(int opcode, MethodProxy m) {
 		super(
 			opcode,
-			m.getParent().replace('.', '/'),
-			m.getName(),
-			m.getDescriptor()
+			m.parent.replace('.', '/'),
+			m.name,
+			m.type.getDescriptor()
 		);
 	}
 }

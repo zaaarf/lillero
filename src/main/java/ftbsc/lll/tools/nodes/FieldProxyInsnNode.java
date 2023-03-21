@@ -19,9 +19,9 @@ public class FieldProxyInsnNode extends FieldInsnNode {
 	public FieldProxyInsnNode(int opcode, FieldProxy f) {
 		super(
 			opcode,
-			f.getParent().replace('.', '/'),
-			f.getName(),
-			f.getDescriptor()
+			f.parent.replace('.', '/'),
+			f.name,
+			f.type.getDescriptor()
 		);
 	}
 }
