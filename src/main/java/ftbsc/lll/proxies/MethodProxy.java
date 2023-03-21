@@ -17,14 +17,14 @@ import static ftbsc.lll.tools.DescriptorBuilder.nameToDescriptor;
 public class MethodProxy extends AbstractProxy {
 
 	/**
-	 * An array of {@link ClassProxy} each representing the parameters of the method.
+	 * An array of {@link TypeProxy} each representing the parameters of the method.
 	 */
-	public final ClassProxy[] parameters;
+	public final TypeProxy[] parameters;
 
 	/**
-	 * The {@link ClassProxy} for the return type of the method.
+	 * The {@link TypeProxy} for the return type of the method.
 	 */
-	public final ClassProxy returnType;
+	public final TypeProxy returnType;
 
 	/**
 	 * A protected constructor, called only from the builder.
@@ -35,11 +35,11 @@ public class MethodProxy extends AbstractProxy {
 	 * @param returnType the return type of the method
 	 */
 	protected MethodProxy(String name, int modifiers, QualifiableProxy parent, Type[] parameters, Type returnType) {
-		super(name, Type.getMethodType(returnType, parameters), modifiers, parent);
+		super(name, Type.getMethodDescriptor(returnType, parameters), modifiers, parent);
 		this.parameters = Arrays.stream(parameters)
-			.map(t -> ClassProxy.from(t, 0))
-			.toArray(ClassProxy[]::new);
-		this.returnType = ClassProxy.from(returnType, 0);
+			.map(t -> TypeProxy.from(t, 0))
+			.toArray(TypeProxy[]::new);
+		this.returnType = TypeProxy.from(returnType, 0);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class MethodProxy extends AbstractProxy {
 	public MethodProxy(Method m) {
 		this(m.getName(),
 			m.getModifiers(),
-			ClassProxy.from(m.getDeclaringClass()),
+			TypeProxy.from(m.getDeclaringClass()),
 			Type.getArgumentTypes(m),
 			Type.getReturnType(m)
 		);
@@ -142,7 +142,7 @@ public class MethodProxy extends AbstractProxy {
 		 * @return the builder's state after the change
 		 */
 		public Builder setParent(String parentFQN, int modifiers) {
-			super.setParent(ClassProxy.from(parentFQN, 0, modifiers));
+			super.setParent(TypeProxy.from(parentFQN, 0, modifiers));
 			return this;
 		}
 

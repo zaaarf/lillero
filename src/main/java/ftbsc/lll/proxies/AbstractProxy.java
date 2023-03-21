@@ -15,9 +15,9 @@ public abstract class AbstractProxy {
 	public final String name;
 
 	/**
-	 * The {@link Type} corresponding to this element.
+	 * The descriptor for this element.
 	 */
-	public final Type type;
+	public final String descriptor;
 
 	/**
 	 * The fully qualified name (i.e. java.lang.String) of
@@ -34,13 +34,13 @@ public abstract class AbstractProxy {
 	/**
 	 * The private constructor, should be called by all classes extending this in theirs.
 	 * @param name the name of the element
-	 * @param type the {@link Type} for the element
+	 * @param descriptor the descriptor for the element
 	 * @param modifiers the modifiers, as a packed int
 	 * @param parent the FQN of the parent class
 	 */
-	protected AbstractProxy(String name, Type type, int modifiers, QualifiableProxy parent) {
+	protected AbstractProxy(String name, String descriptor, int modifiers, QualifiableProxy parent) {
 		this.name = name;
-		this.type = type;
+		this.descriptor = descriptor;
 		this.modifiers = modifiers;
 		this.parent = parent;
 	}
@@ -57,7 +57,7 @@ public abstract class AbstractProxy {
 			return p.parent.equals(this.parent)
 				&& p.name.equals(this.name)
 				&& p.modifiers == this.modifiers
-				&& p.type.equals(this.type);
+				&& p.descriptor.equals(this.descriptor);
 		} else return false;
 	}
 
@@ -83,9 +83,9 @@ public abstract class AbstractProxy {
 		protected QualifiableProxy parent;
 
 		/**
-		 * The {@link Type} corresponding to the element.
+		 * The descriptor of the element.
 		 */
-		protected Type type;
+		protected String descriptor;
 
 		/**
 		 * The constructor.
@@ -124,21 +124,21 @@ public abstract class AbstractProxy {
 		}
 
 		/**
-		 * @param type the {@link Type} corresponding to the element
-		 * @return the current state of the builder
-		 */
-		public Builder<T> setType(Type type) {
-			this.type = type;
-			return this;
-		}
-
-		/**
 		 * Sets {@link Type} for this element from the descriptor, passed as a {@link String}.
 		 * @param descriptor the descriptor passed as a {@link String}
 		 * @return the builder's state after the change
 		 */
 		public Builder<T> setDescriptor(String descriptor) {
-			return this.setType(Type.getType(descriptor));
+			this.descriptor = descriptor;
+			return this;
+		}
+
+		/**
+		 * @param type the {@link Type} corresponding to the element
+		 * @return the current state of the builder
+		 */
+		public Builder<T> setType(Type type) {
+			return this.setDescriptor(type.getDescriptor());
 		}
 
 		/**

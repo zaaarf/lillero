@@ -16,18 +16,18 @@ public class FieldProxy extends AbstractProxy {
 	 * @param f the {@link Field} object corresponding to this.
 	 */
 	public FieldProxy(Field f) {
-		super(f.getName(), Type.getType(f.getType()), f.getModifiers(), ClassProxy.from(f.getDeclaringClass()));
+		super(f.getName(), Type.getDescriptor(f.getType()), f.getModifiers(), TypeProxy.from(f.getDeclaringClass()));
 	}
 
 	/**
 	 * Protected constructor, called only from the builder.
 	 * @param name the name of the field
-	 * @param type the {@link Type} of the field
+	 * @param descriptor the descriptor of the field
 	 * @param modifiers the modifiers of the field
 	 * @param parent the {@link QualifiableProxy} for the parent
 	 */
-	protected FieldProxy(String name, Type type, int modifiers, QualifiableProxy parent) {
-		super(name, type, modifiers, parent);
+	protected FieldProxy(String name, String descriptor, int modifiers, QualifiableProxy parent) {
+		super(name, descriptor, modifiers, parent);
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class FieldProxy extends AbstractProxy {
 		 * @return the builder's state after the change
 		 */
 		public Builder setParent(String parentFQN, int modifiers) {
-			super.setParent(ClassProxy.from(parentFQN, 0, modifiers));
+			super.setParent(TypeProxy.from(parentFQN, 0, modifiers));
 			return this;
 		}
 
@@ -88,7 +88,7 @@ public class FieldProxy extends AbstractProxy {
 		 */
 		@Override
 		public FieldProxy build() {
-			return new FieldProxy(this.name, this.type, this.modifiers, this.parent);
+			return new FieldProxy(this.name, this.descriptor, this.modifiers, this.parent);
 		}
 	}
 }

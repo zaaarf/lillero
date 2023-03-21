@@ -4,7 +4,7 @@ import org.objectweb.asm.Type;
 
 /**
  * A container for information about an element which has a fully-qualified name.
- * @see ClassProxy
+ * @see TypeProxy
  * @see PackageProxy
  * @since 0.4.0
  */
@@ -27,8 +27,8 @@ public abstract class QualifiableProxy extends AbstractProxy {
 	 * @param parent the {@link QualifiableProxy} representing the parent of this element
 	 * @param fullyQualifiedName the FQN of the element
 	 */
-	protected QualifiableProxy(Type type, int modifiers, QualifiableProxy parent, String fullyQualifiedName) {
-		super(extractSimpleNameFromFQN(fullyQualifiedName), type, modifiers, parent);
+	protected QualifiableProxy(String descriptor, int modifiers, QualifiableProxy parent, String fullyQualifiedName) {
+		super(extractSimpleNameFromFQN(fullyQualifiedName), descriptor, modifiers, parent);
 		this.fullyQualifiedName = fullyQualifiedName;
 		this.internalName = this.fullyQualifiedName.replace('.', '/');
 	}

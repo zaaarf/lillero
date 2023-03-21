@@ -11,81 +11,93 @@ import static ftbsc.lll.tools.DescriptorBuilder.nameToDescriptor;
  * in ASM patching.
  * @since 0.4.0
  */
-public class ClassProxy extends QualifiableProxy {
+public class TypeProxy extends QualifiableProxy {
+	/**
+	 * Whether this proxy represents a primitive.
+	 */
+	public final boolean primitive;
+
 	/**
 	 * Protected constructor, called only from the builder.
 	 * @param name the name of the class
-	 * @param type the {@link Type} of the class
+	 * @param descriptor the descriptor of the class
 	 * @param modifiers the modifiers of the class
 	 * @param parent the package containing this class
 	 */
-	protected ClassProxy(String name, Type type, int modifiers, String parent) {
-		super(type, modifiers, PackageProxy.from(parent), String.format("%s.%s", name, parent));
+	protected TypeProxy(String name, String descriptor, int modifiers, String parent, boolean primitive) {
+		super(descriptor, modifiers, PackageProxy.from(parent), String.format("%s.%s", name, parent));
+		this.primitive = primitive;
 	}
 
 	/**
 	 * Protected constructor, called only from the builder.
 	 * @param name the name of the class
-	 * @param type the {@link Type} of the class
+	 * @param descriptor the descriptor of the element
 	 * @param modifiers the modifiers of the class
 	 * @param containerClass the FQN of the parent class of the class
 	 */
-	protected ClassProxy(String name, Type type, int modifiers, QualifiableProxy containerClass) {
-		super(type, modifiers, containerClass, String.format("%s$%s", name, containerClass.fullyQualifiedName));
+	protected TypeProxy(String name, String descriptor, int modifiers, QualifiableProxy containerClass, boolean primitive) {
+		super(descriptor, modifiers, containerClass, String.format("%s$%s", name, containerClass.fullyQualifiedName));
+		this.primitive = primitive;
 	}
 
 	/**
-	 * Builds a {@link ClassProxy} from a {@link Type} and modifiers.
+	 * Builds a {@link TypeProxy} from a {@link Type} and modifiers.
 	 * @param type the {@link Type} representing this Class
 	 * @param modifiers the modifiers of the class
 	 */
-	public static ClassProxy from(Type type, int modifiers) {
+	public static TypeProxy from(Type type, int modifiers) {
+		while(type.getSort() == Type.ARRAY)
+			type = type.getElementType();
 		String fqn = type.getInternalName().replace('/', '.');
 		String simpleName = extractSimpleNameFromFQN(fqn);
 		String parent = extractParentFromFQN(fqn);
+		boolean primitive = type.getSort() < Type.ARRAY;
 		if(fqn.contains("$"))
-			return new ClassProxy(simpleName, type, modifiers, from(parent, 0, Modifier.PUBLIC));
-		else return new ClassProxy(simpleName, type, modifiers, parent);
+			return new TypeProxy(simpleName, type.getDescriptor(), modifiers, from(type, Modifier.PUBLIC), primitive);
+		else return new TypeProxy(simpleName, type.getDescriptor(), modifiers, parent, primitive);
 	}
 
 	/**
-	 * Builds a {@link ClassProxy} given only the fully-qualified name and modifiers.
+	 * Builds a {@link TypeProxy} given only the fully-qualified name and modifiers.
 	 * @param fqn the fully qualified name of the desired class
 	 * @param arrayLevel the array level for this type
 	 * @param modifiers the access modifiers of the desired class
 	 * @implNote If present, parent classes will be assumed to have {@code public} as
 	 * 					 their only modifier.
-	 * @return the built {@link ClassProxy}
+	 * @return the built {@link TypeProxy}
 	 */
-	protected static ClassProxy from(String fqn, int arrayLevel, int modifiers) {
+	protected static TypeProxy from(String fqn, int arrayLevel, int modifiers) {
 		return from(Type.getObjectType(nameToDescriptor(fqn, arrayLevel)), modifiers);
 	}
 
 	/**
-	 * Builds a {@link ClassProxy} from a {@link Class} object.
+	 * Builds a {@link TypeProxy} from a {@link Class} object.
 	 * @param clazz the {@link Class} object representing the target class
-	 * @return the built {@link ClassProxy}
+	 * @return the built {@link TypeProxy}
 	 */
-	public static ClassProxy from(Class<?> clazz) {
+	public static TypeProxy from(Class<?> clazz) {
 		Class<?> parentClass = clazz.getEnclosingClass();
 		if(parentClass == null)
-			return new ClassProxy(
+			return new TypeProxy(
 				clazz.getSimpleName(),
-				Type.getType(clazz),
+				Type.getDescriptor(clazz),
 				clazz.getModifiers(),
-				clazz.getPackage().getName()
+				clazz.getPackage().getName(),
+				clazz.isPrimitive()
 			);
 		else
-			return new ClassProxy(
+			return new TypeProxy(
 				clazz.getSimpleName(),
-				Type.getType(clazz),
+				Type.getDescriptor(clazz),
 				clazz.getModifiers(),
-				from(parentClass)
+				from(parentClass),
+				clazz.isPrimitive()
 			);
 	}
 
 	/**
-	 * Returns a new instance of {@link ClassProxy.Builder}.
+	 * Returns a new instance of {@link TypeProxy.Builder}.
 	 * @param name the name of the class
 	 * @return the builder object for class proxies
 	 */
@@ -100,13 +112,18 @@ public class ClassProxy extends QualifiableProxy {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		return obj instanceof ClassProxy && super.equals(obj);
+		return obj instanceof TypeProxy && super.equals(obj);
 	}
 
 	/**
-	 * A builder object for {@link ClassProxy}.
+	 * A builder object for {@link TypeProxy}.
 	 */
-	public static class Builder extends AbstractProxy.Builder<ClassProxy> {
+	public static class Builder extends AbstractProxy.Builder<TypeProxy> {
+
+		/**
+		 * Whether the proxy represents a primitive.
+		 */
+		private boolean primitive;
 
 		/**
 		 * The constructor of the builder, used only internally.
@@ -114,6 +131,7 @@ public class ClassProxy extends QualifiableProxy {
 		 */
 		Builder(String name) {
 			super(name);
+			this.primitive = false;
 		}
 
 		/**
@@ -124,12 +142,12 @@ public class ClassProxy extends QualifiableProxy {
 		 * @return the builder's state after the change
 		 */
 		public Builder setParent(Class<?> containerClass) {
-			super.setParent(ClassProxy.from(containerClass));
+			super.setParent(TypeProxy.from(containerClass));
 			return this;
 		}
 
 		/**
-		 * Sets this class as an inner class and builds a {@link ClassProxy}
+		 * Sets this class as an inner class and builds a {@link TypeProxy}
 		 * from the given parent and modifiers.
 		 * @param parentFQN the fully qualified name of the parent
 		 * @param modifiers the modifiers of the parent (if it's a class)
@@ -137,12 +155,12 @@ public class ClassProxy extends QualifiableProxy {
 		 * @return the builder's state after the change
 		 */
 		public Builder setParent(String parentFQN, int modifiers, boolean isParentPackage) {
-			super.setParent(isParentPackage ? PackageProxy.from(parentFQN) : ClassProxy.from(parentFQN, 0, modifiers));
+			super.setParent(isParentPackage ? PackageProxy.from(parentFQN) : TypeProxy.from(parentFQN, 0, modifiers));
 			return this;
 		}
 
 		/**
-		 * Sets this class as an inner class and builds a {@link ClassProxy}
+		 * Sets this class as an inner class and builds a {@link TypeProxy}
 		 * from the given parent.
 		 * @param parentFQN the fully qualified name of the parent
 		 * @param isParentPackage whether this parent should be interpreted as a package or class
@@ -153,12 +171,23 @@ public class ClassProxy extends QualifiableProxy {
 		}
 
 		/**
-		 * Builds a {@link ClassProxy} of the given kind.
-		 * @return the built {@link ClassProxy}
+		 * Sets the primitive flag to true or false, to signal that the type here specified
+		 * is a primitive.
+		 * @param primitive the new state of the primitive flag
+		 * @return the builder's state after the change
+		 */
+		public Builder setPrimitive(boolean primitive) {
+			this.primitive = primitive;
+			return this;
+		}
+
+		/**
+		 * Builds a {@link TypeProxy} of the given kind.
+		 * @return the built {@link TypeProxy}
 		 */
 		@Override
-		public ClassProxy build() {
-			return new ClassProxy(this.name, this.type, this.modifiers, this.parent);
+		public TypeProxy build() {
+			return new TypeProxy(this.name, this.descriptor, this.modifiers, this.parent, this.primitive);
 		}
 	}
 }
