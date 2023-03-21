@@ -1,5 +1,8 @@
-package ftbsc.lll.proxies;
+package ftbsc.lll.proxies.impl;
 
+import ftbsc.lll.proxies.AbstractProxy;
+import ftbsc.lll.proxies.ProxyType;
+import ftbsc.lll.proxies.QualifiableProxy;
 import org.objectweb.asm.Type;
 
 import java.lang.reflect.Method;
@@ -35,7 +38,7 @@ public class MethodProxy extends AbstractProxy {
 	 * @param returnType the return type of the method
 	 */
 	protected MethodProxy(String name, int modifiers, QualifiableProxy parent, Type[] parameters, Type returnType) {
-		super(name, Type.getMethodDescriptor(returnType, parameters), modifiers, parent);
+		super(name, Type.getMethodDescriptor(returnType, parameters), modifiers, parent, ProxyType.METHOD);
 		this.parameters = Arrays.stream(parameters)
 			.map(t -> TypeProxy.from(t, 0))
 			.toArray(TypeProxy[]::new);

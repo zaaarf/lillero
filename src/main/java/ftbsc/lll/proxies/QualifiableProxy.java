@@ -1,11 +1,7 @@
 package ftbsc.lll.proxies;
 
-import org.objectweb.asm.Type;
-
 /**
- * A container for information about an element which has a fully-qualified name.
- * @see TypeProxy
- * @see PackageProxy
+ * A proxy for elements who have a fully-qualified name.
  * @since 0.4.0
  */
 public abstract class QualifiableProxy extends AbstractProxy {
@@ -26,9 +22,10 @@ public abstract class QualifiableProxy extends AbstractProxy {
 	 * @param modifiers the modifiers, as a packed int
 	 * @param parent the {@link QualifiableProxy} representing the parent of this element
 	 * @param fullyQualifiedName the FQN of the element
+	 * @param proxyType the {@link ProxyType} being represented here
 	 */
-	protected QualifiableProxy(String descriptor, int modifiers, QualifiableProxy parent, String fullyQualifiedName) {
-		super(extractSimpleNameFromFQN(fullyQualifiedName), descriptor, modifiers, parent);
+	protected QualifiableProxy(String descriptor, int modifiers, QualifiableProxy parent, String fullyQualifiedName, ProxyType proxyType) {
+		super(extractSimpleNameFromFQN(fullyQualifiedName), descriptor, modifiers, parent, proxyType);
 		this.fullyQualifiedName = fullyQualifiedName;
 		this.internalName = this.fullyQualifiedName.replace('.', '/');
 	}

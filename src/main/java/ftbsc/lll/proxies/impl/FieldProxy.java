@@ -1,5 +1,8 @@
-package ftbsc.lll.proxies;
+package ftbsc.lll.proxies.impl;
 
+import ftbsc.lll.proxies.AbstractProxy;
+import ftbsc.lll.proxies.ProxyType;
+import ftbsc.lll.proxies.QualifiableProxy;
 import org.objectweb.asm.Type;
 
 import java.lang.reflect.Field;
@@ -11,15 +14,6 @@ import java.lang.reflect.Field;
  */
 public class FieldProxy extends AbstractProxy {
 	/**
-	 * A public constructor, builds a proxy from a {@link Field}
-	 * obtained from reflection.
-	 * @param f the {@link Field} object corresponding to this.
-	 */
-	public FieldProxy(Field f) {
-		super(f.getName(), Type.getDescriptor(f.getType()), f.getModifiers(), TypeProxy.from(f.getDeclaringClass()));
-	}
-
-	/**
 	 * Protected constructor, called only from the builder.
 	 * @param name the name of the field
 	 * @param descriptor the descriptor of the field
@@ -27,7 +21,16 @@ public class FieldProxy extends AbstractProxy {
 	 * @param parent the {@link QualifiableProxy} for the parent
 	 */
 	protected FieldProxy(String name, String descriptor, int modifiers, QualifiableProxy parent) {
-		super(name, descriptor, modifiers, parent);
+		super(name, descriptor, modifiers, parent, ProxyType.FIELD);
+	}
+
+	/**
+	 * A public constructor, builds a proxy from a {@link Field}
+	 * obtained from reflection.
+	 * @param f the {@link Field} object corresponding to this.
+	 */
+	public FieldProxy(Field f) {
+		this(f.getName(), Type.getDescriptor(f.getType()), f.getModifiers(), TypeProxy.from(f.getDeclaringClass()));
 	}
 
 	/**

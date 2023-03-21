@@ -1,6 +1,6 @@
 package ftbsc.lll.tools.nodes;
 
-import ftbsc.lll.proxies.MethodProxy;
+import ftbsc.lll.proxies.impl.MethodProxy;
 import org.objectweb.asm.tree.MethodInsnNode;
 
 /**

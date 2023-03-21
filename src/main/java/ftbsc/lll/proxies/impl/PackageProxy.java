@@ -1,4 +1,7 @@
-package ftbsc.lll.proxies;
+package ftbsc.lll.proxies.impl;
+
+import ftbsc.lll.proxies.ProxyType;
+import ftbsc.lll.proxies.QualifiableProxy;
 
 /**
  * A container for information about a package.
@@ -17,7 +20,7 @@ public class PackageProxy extends QualifiableProxy {
 	 * @param fqn the fully-qualified name of this package
 	 */
 	protected PackageProxy(PackageProxy parent, String fqn) {
-		super(null, 0, parent, fqn);
+		super(null, 0, parent, fqn, ProxyType.PACKAGE);
 	}
 
 	/**

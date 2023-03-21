@@ -3,11 +3,15 @@ package ftbsc.lll.proxies;
 import org.objectweb.asm.Type;
 
 /**
- * Abstract proxy class, implementing common aspects
- * of {@link MethodProxy} and {@link FieldProxy}.
+ * Abstract proxy class, implementing common aspects.
  * @since 0.3.0
  */
 public abstract class AbstractProxy {
+
+	/**
+	 * Which type of proxy this is.
+	 */
+	public final ProxyType proxyType;
 
 	/**
 	 * The name of the corresponding element.
@@ -37,12 +41,14 @@ public abstract class AbstractProxy {
 	 * @param descriptor the descriptor for the element
 	 * @param modifiers the modifiers, as a packed int
 	 * @param parent the FQN of the parent class
+	 * @param proxyType the {@link ProxyType} being represented here
 	 */
-	protected AbstractProxy(String name, String descriptor, int modifiers, QualifiableProxy parent) {
+	protected AbstractProxy(String name, String descriptor, int modifiers, QualifiableProxy parent, ProxyType proxyType) {
 		this.name = name;
 		this.descriptor = descriptor;
 		this.modifiers = modifiers;
 		this.parent = parent;
+		this.proxyType = proxyType;
 	}
 
 	/**

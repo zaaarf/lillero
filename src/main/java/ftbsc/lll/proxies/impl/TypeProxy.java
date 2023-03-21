@@ -1,5 +1,8 @@
-package ftbsc.lll.proxies;
+package ftbsc.lll.proxies.impl;
 
+import ftbsc.lll.proxies.AbstractProxy;
+import ftbsc.lll.proxies.ProxyType;
+import ftbsc.lll.proxies.QualifiableProxy;
 import org.objectweb.asm.Type;
 
 import java.lang.reflect.Modifier;
@@ -26,7 +29,7 @@ public class TypeProxy extends QualifiableProxy {
 	 * @param primitive whether the proxy is a primitive
 	 */
 	protected TypeProxy(String name, String descriptor, int modifiers, String parent, boolean primitive) {
-		super(descriptor, modifiers, PackageProxy.from(parent), String.format("%s.%s", name, parent));
+		super(descriptor, modifiers, PackageProxy.from(parent), String.format("%s.%s", name, parent), ProxyType.TYPE);
 		this.primitive = primitive;
 	}
 
@@ -39,7 +42,7 @@ public class TypeProxy extends QualifiableProxy {
 	 * @param containerClass the FQN of the parent class of the class
 	 */
 	protected TypeProxy(String name, String descriptor, int modifiers, QualifiableProxy containerClass, boolean primitive) {
-		super(descriptor, modifiers, containerClass, String.format("%s$%s", name, containerClass.fullyQualifiedName));
+		super(descriptor, modifiers, containerClass, String.format("%s$%s", name, containerClass.fullyQualifiedName), ProxyType.TYPE);
 		this.primitive = primitive;
 	}
 

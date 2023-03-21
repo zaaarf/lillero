@@ -1,6 +1,6 @@
 package ftbsc.lll.tools.nodes;
 
-import ftbsc.lll.proxies.FieldProxy;
+import ftbsc.lll.proxies.impl.FieldProxy;
 import org.objectweb.asm.tree.FieldInsnNode;
 
 /**
