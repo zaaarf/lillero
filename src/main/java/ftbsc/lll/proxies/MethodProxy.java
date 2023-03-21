@@ -4,6 +4,7 @@ import org.objectweb.asm.Type;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static ftbsc.lll.tools.DescriptorBuilder.nameToDescriptor;
@@ -16,14 +17,30 @@ import static ftbsc.lll.tools.DescriptorBuilder.nameToDescriptor;
 public class MethodProxy extends AbstractProxy {
 
 	/**
-	 * The parameters of the method.
+	 * An array of {@link ClassProxy} each representing the parameters of the method.
 	 */
-	public final Type[] parameters;
+	public final ClassProxy[] parameters;
 
 	/**
-	 * The return type of the method.
+	 * The {@link ClassProxy} for the return type of the method.
 	 */
-	public final Type returnType;
+	public final ClassProxy returnType;
+
+	/**
+	 * A protected constructor, called only from the builder.
+	 * @param name the name of the method
+	 * @param modifiers the modifiers of the method
+	 * @param parent the {@link QualifiableProxy} for the parent
+	 * @param parameters the parameters of the method
+	 * @param returnType the return type of the method
+	 */
+	protected MethodProxy(String name, int modifiers, QualifiableProxy parent, Type[] parameters, Type returnType) {
+		super(name, Type.getMethodType(returnType, parameters), modifiers, parent);
+		this.parameters = Arrays.stream(parameters)
+			.map(t -> ClassProxy.from(t, 0))
+			.toArray(ClassProxy[]::new);
+		this.returnType = ClassProxy.from(returnType, 0);
+	}
 
 	/**
 	 * A public constructor, builds a proxy from a {@link Method}
@@ -31,24 +48,12 @@ public class MethodProxy extends AbstractProxy {
 	 * @param m the {@link Method} object corresponding to this.
 	 */
 	public MethodProxy(Method m) {
-		super(m.getName(), Type.getType(m), m.getModifiers(), Type.getInternalName(m.getDeclaringClass()));
-		Type mt = Type.getType(m);
-		this.parameters = mt.getArgumentTypes();
-		this.returnType = mt.getReturnType();
-	}
-
-	/**
-	 * A protected constructor, called only from the builder.
-	 * @param name the name of the method
-	 * @param modifiers the modifiers of the method
-	 * @param parent the FQN of the parent class of the method
-	 * @param parameters the parameters of the method
-	 * @param returnType the return type of the method
-	 */
-	protected MethodProxy(String name, int modifiers, String parent, Type[] parameters, Type returnType) {
-		super(name, Type.getMethodType(returnType, parameters), modifiers, parent);
-		this.parameters = parameters;
-		this.returnType = returnType;
+		this(m.getName(),
+			m.getModifiers(),
+			ClassProxy.from(m.getDeclaringClass()),
+			Type.getArgumentTypes(m),
+			Type.getReturnType(m)
+		);
 	}
 
 	/**
@@ -58,6 +63,19 @@ public class MethodProxy extends AbstractProxy {
 	 */
 	public static Builder builder(String name) {
 		return new Builder(name);
+	}
+
+	/**
+	 * Indicates whether the given object is a proxy for the same element as this.
+	 * @param obj the object to perform
+	 * @return true if it's equal
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof MethodProxy) {
+			MethodProxy m = (MethodProxy) obj;
+			return super.equals(obj) && m.returnType.equals(this.returnType) && Arrays.equals(m.parameters, this.parameters);
+		} else return false;
 	}
 
 	/**
@@ -118,6 +136,27 @@ public class MethodProxy extends AbstractProxy {
 		}
 
 		/**
+		 * Sets the parent class of this method to the one described by the
+		 * fully qualified name and with the given modifiers.
+		 * @param parentFQN the fully qualified name of the parent
+		 * @return the builder's state after the change
+		 */
+		public Builder setParent(String parentFQN, int modifiers) {
+			super.setParent(ClassProxy.from(parentFQN, 0, modifiers));
+			return this;
+		}
+
+		/**
+		 * Sets the parent class of this method to the one described by the
+		 * fully qualified name.
+		 * @param parentFQN the fully qualified name of the parent
+		 * @return the builder's state after the change
+		 */
+		public Builder setParent(String parentFQN) {
+			return this.setParent(parentFQN, 0);
+		}
+
+		/**
 		 * Sets the return type to the given type.
 		 * @param returnType the {@link Class} object corresponding to
 		 *                   the return type
@@ -134,7 +173,12 @@ public class MethodProxy extends AbstractProxy {
 		 */
 		@Override
 		public MethodProxy build() {
-			return new MethodProxy(name, modifiers, parent, parameters.toArray(new Type[0]), returnType);
+			return new MethodProxy(
+				this.name,
+				this.modifiers,
+				this.parent,
+				this.parameters.toArray(new Type[0]),
+				this.returnType);
 		}
 	}
 }

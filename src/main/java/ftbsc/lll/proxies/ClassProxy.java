@@ -2,36 +2,25 @@ package ftbsc.lll.proxies;
 
 import org.objectweb.asm.Type;
 
+import java.lang.reflect.Modifier;
+
+import static ftbsc.lll.tools.DescriptorBuilder.nameToDescriptor;
+
 /**
  * A container for information about classes to be used
  * in ASM patching.
  * @since 0.4.0
  */
-public class ClassProxy extends AbstractProxy {
-
-	/**
-	 * The fully-qualified name of the class represented by this proxy.
-	 */
-	public final String fqn;
-
-	/**
-	 * The {@link ClassProxy} representing the class which contains the
-	 * class represented by this proxy. May be null if the class represented
-	 * by this proxy is not an inner class.
-	 */
-	public final ClassProxy containerClass;
-
+public class ClassProxy extends QualifiableProxy {
 	/**
 	 * Protected constructor, called only from the builder.
 	 * @param name the name of the class
 	 * @param type the {@link Type} of the class
 	 * @param modifiers the modifiers of the class
-	 * @param parent the FQN of the parent class of the class
+	 * @param parent the package containing this class
 	 */
 	protected ClassProxy(String name, Type type, int modifiers, String parent) {
-		super(name, type, modifiers, parent);
-		this.fqn = String.format("%s.%s", name, parent);
-		this.containerClass = null;
+		super(type, modifiers, PackageProxy.from(parent), String.format("%s.%s", name, parent));
 	}
 
 	/**
@@ -41,31 +30,35 @@ public class ClassProxy extends AbstractProxy {
 	 * @param modifiers the modifiers of the class
 	 * @param containerClass the FQN of the parent class of the class
 	 */
-	protected ClassProxy(String name, Type type, int modifiers, ClassProxy containerClass) {
-		super(name, type, modifiers, containerClass.fqn);
-		this.fqn = String.format("%s$%s", name, parent);
-		this.containerClass = containerClass;
+	protected ClassProxy(String name, Type type, int modifiers, QualifiableProxy containerClass) {
+		super(type, modifiers, containerClass, String.format("%s$%s", name, containerClass.fullyQualifiedName));
+	}
+
+	/**
+	 * Builds a {@link ClassProxy} from a {@link Type} and modifiers.
+	 * @param type the {@link Type} representing this Class
+	 * @param modifiers the modifiers of the class
+	 */
+	public static ClassProxy from(Type type, int modifiers) {
+		String fqn = type.getInternalName().replace('/', '.');
+		String simpleName = extractSimpleNameFromFQN(fqn);
+		String parent = extractParentFromFQN(fqn);
+		if(fqn.contains("$"))
+			return new ClassProxy(simpleName, type, modifiers, from(parent, 0, Modifier.PUBLIC));
+		else return new ClassProxy(simpleName, type, modifiers, parent);
 	}
 
 	/**
 	 * Builds a {@link ClassProxy} given only the fully-qualified name and modifiers.
 	 * @param fqn the fully qualified name of the desired class
+	 * @param arrayLevel the array level for this type
 	 * @param modifiers the access modifiers of the desired class
+	 * @implNote If present, parent classes will be assumed to have {@code public} as
+	 * 					 their only modifier.
 	 * @return the built {@link ClassProxy}
 	 */
-	protected static ClassProxy from(String fqn, int modifiers) {
-		Type type = Type.getObjectType(fqn.replace('.', '/'));
-		if(fqn.contains("$")) {
-			String[] split = fqn.split("\\$");
-			String simpleName = split[split.length - 1];
-			ClassProxy parentClass = from(fqn.replace("$" + simpleName, ""), 0);
-			return new ClassProxy(simpleName, type, modifiers, parentClass);
-		} else {
-			String[] split = fqn.split("\\.");
-			String simpleName = split[split.length - 1];
-			String parent = fqn.replace("." + simpleName, "");
-			return new ClassProxy(simpleName, type, modifiers, parent);
-		}
+	protected static ClassProxy from(String fqn, int arrayLevel, int modifiers) {
+		return from(Type.getObjectType(nameToDescriptor(fqn, arrayLevel)), modifiers);
 	}
 
 	/**
@@ -73,8 +66,9 @@ public class ClassProxy extends AbstractProxy {
 	 * @param clazz the {@link Class} object representing the target class
 	 * @return the built {@link ClassProxy}
 	 */
-	protected static ClassProxy from(Class<?> clazz) {
-		if(clazz.getEnclosingClass() == null)
+	public static ClassProxy from(Class<?> clazz) {
+		Class<?> parentClass = clazz.getEnclosingClass();
+		if(parentClass == null)
 			return new ClassProxy(
 				clazz.getSimpleName(),
 				Type.getType(clazz),
@@ -86,7 +80,7 @@ public class ClassProxy extends AbstractProxy {
 				clazz.getSimpleName(),
 				Type.getType(clazz),
 				clazz.getModifiers(),
-				from(clazz.getEnclosingClass())
+				from(parentClass)
 			);
 	}
 
@@ -100,19 +94,26 @@ public class ClassProxy extends AbstractProxy {
 	}
 
 	/**
+	 * Indicates whether the given object is a proxy for the same element as this.
+	 * @param obj the object to perform
+	 * @return true if it's equal
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof ClassProxy && super.equals(obj);
+	}
+
+	/**
 	 * A builder object for {@link ClassProxy}.
 	 */
 	public static class Builder extends AbstractProxy.Builder<ClassProxy> {
-		
-		private ClassProxy containerClass;
-		
+
 		/**
 		 * The constructor of the builder, used only internally.
 		 * @param name the "simple name" of the class
 		 */
 		Builder(String name) {
 			super(name);
-			this.containerClass = null;
 		}
 
 		/**
@@ -122,42 +123,33 @@ public class ClassProxy extends AbstractProxy {
 		 *                       container class
 		 * @return the builder's state after the change
 		 */
-		public Builder setContainerClass(Class<?> containerClass) {
-			this.containerClass = ClassProxy.from(containerClass);
-			return this;
-		}
-
-		/**
-		 * Sets this class as an inner class and sets the containing
-		 * class to the given proxy.
-		 * @param containerClass the {@link ClassProxy} representing
-		 *                         the container class
-		 * @return the builder's state after the change
-		 */
-		public Builder setContainerClass(ClassProxy containerClass) {
-			this.containerClass = containerClass;
+		public Builder setParent(Class<?> containerClass) {
+			super.setParent(ClassProxy.from(containerClass));
 			return this;
 		}
 
 		/**
 		 * Sets this class as an inner class and builds a {@link ClassProxy}
 		 * from the given parent and modifiers.
-		 * @param parentFQN  the fully qualified name of the parent
+		 * @param parentFQN the fully qualified name of the parent
+		 * @param modifiers the modifiers of the parent (if it's a class)
+		 * @param isParentPackage whether this parent should be interpreted as a package or class
 		 * @return the builder's state after the change
 		 */
-		public Builder setParent(String parentFQN, int modifiers) {
-			return this.setContainerClass(ClassProxy.from(parentFQN, modifiers));
+		public Builder setParent(String parentFQN, int modifiers, boolean isParentPackage) {
+			super.setParent(isParentPackage ? PackageProxy.from(parentFQN) : ClassProxy.from(parentFQN, 0, modifiers));
+			return this;
 		}
 
 		/**
 		 * Sets this class as an inner class and builds a {@link ClassProxy}
 		 * from the given parent.
-		 * @param parentFQN  the fully qualified name of the parent
+		 * @param parentFQN the fully qualified name of the parent
+		 * @param isParentPackage whether this parent should be interpreted as a package or class
 		 * @return the builder's state after the change
 		 */
-		@Override
-		public Builder setParent(String parentFQN) {
-			return this.setParent(parentFQN, 0);
+		public Builder setParent(String parentFQN, boolean isParentPackage) {
+			return this.setParent(parentFQN, 0, isParentPackage);
 		}
 
 		/**
@@ -166,9 +158,7 @@ public class ClassProxy extends AbstractProxy {
 		 */
 		@Override
 		public ClassProxy build() {
-			if(this.containerClass == null)
-				return new ClassProxy(this.name, this.type, this.modifiers, this.parent);
-			else return new ClassProxy(this.name, this.type, this.modifiers, this.containerClass);
+			return new ClassProxy(this.name, this.type, this.modifiers, this.parent);
 		}
 	}
 }

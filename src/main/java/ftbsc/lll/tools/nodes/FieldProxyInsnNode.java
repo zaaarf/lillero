@@ -17,11 +17,6 @@ public class FieldProxyInsnNode extends FieldInsnNode {
 	 * @param f a {@link FieldProxy} representing the field to call
 	 */
 	public FieldProxyInsnNode(int opcode, FieldProxy f) {
-		super(
-			opcode,
-			f.parent.replace('.', '/'),
-			f.name,
-			f.type.getDescriptor()
-		);
+		super(opcode, f.parent.internalName, f.name, f.type.getDescriptor());
 	}
 }

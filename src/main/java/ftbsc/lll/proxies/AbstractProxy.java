@@ -14,7 +14,6 @@ public abstract class AbstractProxy {
 	 */
 	public final String name;
 
-
 	/**
 	 * The {@link Type} corresponding to this element.
 	 */
@@ -24,7 +23,7 @@ public abstract class AbstractProxy {
 	 * The fully qualified name (i.e. java.lang.String) of
 	 * the parent class.
 	 */
-	public final String parent;
+	public final QualifiableProxy parent;
 
 	/**
 	 * The modifiers of the element, as a packed int.
@@ -39,11 +38,27 @@ public abstract class AbstractProxy {
 	 * @param modifiers the modifiers, as a packed int
 	 * @param parent the FQN of the parent class
 	 */
-	protected AbstractProxy(String name, Type type, int modifiers, String parent) {
+	protected AbstractProxy(String name, Type type, int modifiers, QualifiableProxy parent) {
 		this.name = name;
 		this.type = type;
 		this.modifiers = modifiers;
 		this.parent = parent;
+	}
+
+	/**
+	 * Indicates whether the given object is a proxy for the same element as this.
+	 * @param obj the object to perform
+	 * @return true if it's equal
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof AbstractProxy) {
+			AbstractProxy p = (AbstractProxy) obj;
+			return p.parent.equals(this.parent)
+				&& p.name.equals(this.name)
+				&& p.modifiers == this.modifiers
+				&& p.type.equals(this.type);
+		} else return false;
 	}
 
 	/**
@@ -65,7 +80,7 @@ public abstract class AbstractProxy {
 		/**
 		 * The fully qualified name of the parent.
 		 */
-		protected String parent;
+		protected QualifiableProxy parent;
 
 		/**
 		 * The {@link Type} corresponding to the element.
@@ -80,7 +95,6 @@ public abstract class AbstractProxy {
 			this.name = name;
 			this.modifiers = 0;
 		}
-
 
 		/**
 		 * @param newModifier the modifier to add
@@ -101,11 +115,11 @@ public abstract class AbstractProxy {
 		}
 
 		/**
-		 * @param parentFQN the fully qualified name of the parent
+		 * @param parent the {@link QualifiableProxy} representing the parent
 		 * @return the current state of the builder
 		 */
-		public Builder<T> setParent(String parentFQN) {
-			this.parent = parentFQN;
+		public Builder<T> setParent(QualifiableProxy parent) {
+			this.parent = parent;
 			return this;
 		}
 
@@ -118,7 +132,6 @@ public abstract class AbstractProxy {
 			return this;
 		}
 
-
 		/**
 		 * Sets {@link Type} for this element from the descriptor, passed as a {@link String}.
 		 * @param descriptor the descriptor passed as a {@link String}
@@ -127,8 +140,6 @@ public abstract class AbstractProxy {
 		public Builder<T> setDescriptor(String descriptor) {
 			return this.setType(Type.getType(descriptor));
 		}
-
-
 
 		/**
 		 * @return the built proxy object

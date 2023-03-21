@@ -18,11 +18,6 @@ public class MethodProxyInsnNode extends MethodInsnNode {
 	 * @param m a {@link MethodProxy} representing the method to call
 	 */
 	public MethodProxyInsnNode(int opcode, MethodProxy m) {
-		super(
-			opcode,
-			m.parent.replace('.', '/'),
-			m.name,
-			m.type.getDescriptor()
-		);
+		super(opcode,	m.parent.internalName, m.name, m.type.getDescriptor());
 	}
 }

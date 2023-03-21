@@ -16,7 +16,7 @@ public class FieldProxy extends AbstractProxy {
 	 * @param f the {@link Field} object corresponding to this.
 	 */
 	public FieldProxy(Field f) {
-		super(f.getName(), Type.getType(f.getType()), f.getModifiers(), Type.getInternalName(f.getDeclaringClass()));
+		super(f.getName(), Type.getType(f.getType()), f.getModifiers(), ClassProxy.from(f.getDeclaringClass()));
 	}
 
 	/**
@@ -24,9 +24,9 @@ public class FieldProxy extends AbstractProxy {
 	 * @param name the name of the field
 	 * @param type the {@link Type} of the field
 	 * @param modifiers the modifiers of the field
-	 * @param parent the FQN of the parent class of the field
+	 * @param parent the {@link QualifiableProxy} for the parent
 	 */
-	protected FieldProxy(String name, Type type, int modifiers, String parent) {
+	protected FieldProxy(String name, Type type, int modifiers, QualifiableProxy parent) {
 		super(name, type, modifiers, parent);
 	}
 
@@ -40,6 +40,16 @@ public class FieldProxy extends AbstractProxy {
 	}
 
 	/**
+	 * Indicates whether the given object is a proxy for the same element as this.
+	 * @param obj the object to perform
+	 * @return true if it's equal
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof FieldProxy && super.equals(obj);
+	}
+
+	/**
 	 * A builder object for {@link FieldProxy}.
 	 */
 	public static class Builder extends AbstractProxy.Builder<FieldProxy> {
@@ -49,6 +59,27 @@ public class FieldProxy extends AbstractProxy {
 		 */
 		Builder(String name) {
 			super(name);
+		}
+
+		/**
+		 * Sets the parent class of this field to the one described by the
+		 * fully qualified name and with the given modifiers.
+		 * @param parentFQN the fully qualified name of the parent
+		 * @return the builder's state after the change
+		 */
+		public Builder setParent(String parentFQN, int modifiers) {
+			super.setParent(ClassProxy.from(parentFQN, 0, modifiers));
+			return this;
+		}
+
+		/**
+		 * Sets the parent class of this field to the one described by the
+		 * fully qualified name.
+		 * @param parentFQN the fully qualified name of the parent
+		 * @return the builder's state after the change
+		 */
+		public Builder setParent(String parentFQN) {
+			return this.setParent(parentFQN, 0);
 		}
 
 		/**
