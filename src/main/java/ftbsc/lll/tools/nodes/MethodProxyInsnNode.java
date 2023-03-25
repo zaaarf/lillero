@@ -1,6 +1,6 @@
 package ftbsc.lll.tools.nodes;
 
-import ftbsc.lll.proxies.MethodProxy;
+import ftbsc.lll.proxies.impl.MethodProxy;
 import org.objectweb.asm.tree.MethodInsnNode;
 
 /**
@@ -18,11 +18,6 @@ public class MethodProxyInsnNode extends MethodInsnNode {
 	 * @param m a {@link MethodProxy} representing the method to call
 	 */
 	public MethodProxyInsnNode(int opcode, MethodProxy m) {
-		super(
-			opcode,
-			m.getParent().replace('.', '/'),
-			m.getName(),
-			m.getDescriptor()
-		);
+		super(opcode,	m.parent.internalName, m.name, m.descriptor);
 	}
 }

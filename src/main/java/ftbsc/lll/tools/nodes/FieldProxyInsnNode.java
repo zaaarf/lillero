@@ -1,6 +1,6 @@
 package ftbsc.lll.tools.nodes;
 
-import ftbsc.lll.proxies.FieldProxy;
+import ftbsc.lll.proxies.impl.FieldProxy;
 import org.objectweb.asm.tree.FieldInsnNode;
 
 /**
@@ -17,11 +17,6 @@ public class FieldProxyInsnNode extends FieldInsnNode {
 	 * @param f a {@link FieldProxy} representing the field to call
 	 */
 	public FieldProxyInsnNode(int opcode, FieldProxy f) {
-		super(
-			opcode,
-			f.getParent().replace('.', '/'),
-			f.getName(),
-			f.getDescriptor()
-		);
+		super(opcode, f.parent.internalName, f.name, f.descriptor);
 	}
 }

@@ -26,16 +26,15 @@ public class DescriptorBuilder {
 	 * Initialises default values.
 	 */
 	public DescriptorBuilder() {
-
 		this.returnType = Type.getDescriptor(void.class);
 		this.params = new ArrayList<>();
 	}
 
 	/**
 	 * Sets the return type to the given type.
-	 * WARNING: will most likely cause problems if used with objects outside the
-	 * Java SDK. Pass the fully qualified name as a String rather than the Class
-	 * object for non-standard types (such as Minecraft classes).
+	 * Passing a {@link Class} may cause problems if used with objects outside the Java
+	 * SDK. Pass the fully qualified name as a {@link String} rather than the {@link Class}
+	 * object for non-standard types.
 	 * @param returnType the Class object corresponding to the return type
 	 * @return the builder's state after the change
 	 */
@@ -72,9 +71,9 @@ public class DescriptorBuilder {
 	/**
 	 * Adds a parameter of the given class type to the method.
 	 * Parameter order matters.
-	 * WARNING: will most likely cause problems if used with objects outside the
-	 * Java SDK. Pass the fully qualified name as a String rather than the Class
-	 * object for non-standard types (such as Minecraft classes).
+	 * Passing a {@link Class} may cause problems if used with objects outside the Java
+	 * SDK. Pass the fully qualified name as a {@link String} rather than the {@link Class}
+	 * object for non-standard types.
 	 * @param param the Class object corresponding to the parameter
 	 * @return the builder's state after the change
 	 */
@@ -113,7 +112,7 @@ public class DescriptorBuilder {
 
 	/**
 	 * Builds the descriptor into a string.
-	 * Example result: int m(Object[] o) -> ([Ljava/lang/Object;)I
+	 * Example result: {@code int m(Object[] o)} becomes {@code ([Ljava/lang/Object;)I}
 	 * @return the resulting descriptor
 	 */
 	public String build() {
