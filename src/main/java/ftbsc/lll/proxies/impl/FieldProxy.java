@@ -87,6 +87,15 @@ public class FieldProxy extends AbstractProxy {
 		}
 
 		/**
+		 * @param clazz the {@link Class} corresponding to the element
+		 * @return the current state of the builder
+		 */
+		public Builder setType(Class<?> clazz) {
+			super.setType(Type.getType(clazz));
+			return this;
+		}
+
+		/**
 		 * Builds a {@link FieldProxy} of the given kind.
 		 * @return the built {@link FieldProxy}
 		 */
