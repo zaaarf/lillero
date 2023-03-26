@@ -7,6 +7,8 @@ import org.objectweb.asm.Type;
 
 import java.lang.reflect.Field;
 
+import static ftbsc.lll.tools.DescriptorBuilder.nameToDescriptor;
+
 /**
  * A container for information about class fields to be used
  * in ASM patching.
@@ -87,11 +89,23 @@ public class FieldProxy extends AbstractProxy {
 		}
 
 		/**
+		 * Sets the type of the field to the given {@link Class} object.
 		 * @param clazz the {@link Class} corresponding to the element
 		 * @return the current state of the builder
 		 */
 		public Builder setType(Class<?> clazz) {
 			super.setType(Type.getType(clazz));
+			return this;
+		}
+
+		/**
+		 * Sets the type of the field to the given type.
+		 * @param fqn – the fully qualified name of the parameter type
+		 * @param arrayLevel the array level
+		 * @return the builder's state after the change
+		 */
+		public Builder setType(String fqn, int arrayLevel) {
+			super.setType(Type.getType(nameToDescriptor(fqn, arrayLevel)));
 			return this;
 		}
 
