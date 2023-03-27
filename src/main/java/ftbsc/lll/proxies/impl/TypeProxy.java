@@ -74,7 +74,7 @@ public class TypeProxy extends QualifiableProxy {
 	 * @return the built {@link TypeProxy}
 	 */
 	public static TypeProxy from(String fqn, int arrayLevel, int modifiers) {
-		return from(Type.getObjectType(nameToDescriptor(fqn, arrayLevel)), modifiers);
+		return from(Type.getType(nameToDescriptor(fqn, arrayLevel)), modifiers);
 	}
 
 	/**
