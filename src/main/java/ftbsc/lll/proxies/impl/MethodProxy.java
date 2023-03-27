@@ -39,6 +39,8 @@ public class MethodProxy extends AbstractProxy {
 	 */
 	protected MethodProxy(String name, int modifiers, QualifiableProxy parent, Type[] parameters, Type returnType) {
 		super(name, Type.getMethodDescriptor(returnType, parameters), modifiers, parent, ProxyType.METHOD);
+		for(Type t : parameters)
+			System.out.println(t.toString() + t.getSort());
 		this.parameters = Arrays.stream(parameters)
 			.map(t -> TypeProxy.from(t, 0))
 			.toArray(TypeProxy[]::new);

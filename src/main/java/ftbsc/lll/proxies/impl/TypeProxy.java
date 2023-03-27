@@ -50,15 +50,15 @@ public class TypeProxy extends QualifiableProxy {
 	 * Builds a {@link TypeProxy} from a {@link Type} and modifiers.
 	 * @param type the {@link Type} representing this Class
 	 * @param modifiers the modifiers of the class
-	 * @return the builty {@link TypeProxy}
+	 * @return the built {@link TypeProxy}
 	 */
 	public static TypeProxy from(Type type, int modifiers) {
 		while(type.getSort() == Type.ARRAY)
 			type = type.getElementType();
-		String fqn = type.getInternalName().replace('/', '.');
+		boolean primitive = type.getSort() < Type.ARRAY;
+		String fqn = primitive ? type.getClassName() : type.getInternalName().replace('/', '.');
 		String simpleName = extractSimpleNameFromFQN(fqn);
 		String parent = extractParentFromFQN(fqn);
-		boolean primitive = type.getSort() < Type.ARRAY;
 		if(fqn.contains("$"))
 			return new TypeProxy(simpleName, type.getDescriptor(), modifiers, from(type, Modifier.PUBLIC), primitive);
 		else return new TypeProxy(simpleName, type.getDescriptor(), modifiers, parent, primitive);
