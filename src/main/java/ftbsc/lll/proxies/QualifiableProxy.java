@@ -37,10 +37,10 @@ public abstract class QualifiableProxy extends AbstractProxy {
 	 * @return the parent, or null if the parent was the root element
 	 */
 	protected static String extractParentFromFQN(String fqn) {
-		String lastSeparator = fqn.contains("$") ? "\\$" : "\\.";
-		String[] split = fqn.split(lastSeparator);
-		if(split.length == 1) return null;
-		return fqn.substring(0, split[split.length - 1].length() - 1);
+		String lastSeparator = fqn.contains("$") ? "$" : ".";
+		int pos = fqn.lastIndexOf(lastSeparator);
+		if(pos == -1) return null;
+		return fqn.substring(0, pos);
 	}
 
 	/**

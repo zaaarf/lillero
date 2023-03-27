@@ -29,7 +29,7 @@ public class TypeProxy extends QualifiableProxy {
 	 * @param primitive whether the proxy is a primitive
 	 */
 	protected TypeProxy(String name, String descriptor, int modifiers, String parent, boolean primitive) {
-		super(descriptor, modifiers, PackageProxy.from(parent), String.format("%s.%s", name, parent), ProxyType.TYPE);
+		super(descriptor, modifiers, PackageProxy.from(parent), String.format("%s.%s", parent, name), ProxyType.TYPE);
 		this.primitive = primitive;
 	}
 
