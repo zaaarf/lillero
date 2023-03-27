@@ -33,7 +33,7 @@ public class BytecodePrinter {
 	 * Prints the bytecode of a method using System.out.print().
 	 * @param main the method to print
 	 */
-	public static void printAsmMethod(final MethodNode main) {
+	public static void printMethod(final MethodNode main) {
 		for (AbstractInsnNode i : main.instructions.toArray())
 			System.out.print(insnToString(i));
 	}
@@ -43,7 +43,7 @@ public class BytecodePrinter {
 	 * @param main the method to print
 	 * @param logger the Log4j {@link Logger} to print it with
 	 */
-	public static void logAsmMethod(final MethodNode main, final Logger logger) {
+	public static void logMethod(final MethodNode main, final Logger logger) {
 		for (AbstractInsnNode i : main.instructions.toArray())
 			logger.debug(insnToString(i));
 	}
@@ -53,7 +53,7 @@ public class BytecodePrinter {
 	 * @param main the method to print
 	 * @param path the file to log it to
 	 */
-	public static void logAsmMethod(final MethodNode main, String path) {
+	public static void logMethod(final MethodNode main, String path) {
 		StringBuilder out = new StringBuilder();
 		for (AbstractInsnNode i : main.instructions.toArray())
 			out.append(insnToString(i));
