@@ -172,6 +172,19 @@ public class MethodProxy extends AbstractProxy {
 		}
 
 		/**
+		 * Sets the type of the method to the given descriptor,
+		 * and extracts return and parameter types from it.
+		 * @param descr the descriptor
+		 * @return the builder's state after the change
+		 */
+		public Builder setDescriptor(String descr) {
+			super.setDescriptor(descr);
+			this.parameters.addAll(Arrays.asList(Type.getArgumentTypes(descr)));
+			this.returnType = Type.getReturnType(descr);
+			return this;
+		}
+
+		/**
 		 * Builds a {@link MethodProxy} of the given kind.
 		 * @return the built {@link MethodProxy}
 		 */
