@@ -42,7 +42,7 @@ public class TypeProxy extends QualifiableProxy {
 	 * @param containerClass the FQN of the parent class of the class
 	 */
 	protected TypeProxy(String name, String descriptor, int modifiers, QualifiableProxy containerClass, boolean primitive) {
-		super(descriptor, modifiers, containerClass, String.format("%s$%s", name, containerClass.fullyQualifiedName), ProxyType.TYPE);
+		super(descriptor, modifiers, containerClass, String.format("%s$%s", containerClass.fullyQualifiedName, name), ProxyType.TYPE);
 		this.primitive = primitive;
 	}
 
@@ -59,8 +59,8 @@ public class TypeProxy extends QualifiableProxy {
 		String fqn = primitive ? type.getClassName() : type.getInternalName().replace('/', '.');
 		String simpleName = extractSimpleNameFromFQN(fqn);
 		String parent = extractParentFromFQN(fqn);
-		if(fqn.contains("$"))
-			return new TypeProxy(simpleName, type.getDescriptor(), modifiers, from(type, Modifier.PUBLIC), primitive);
+		if(fqn.contains("$") && parent != null)
+			return new TypeProxy(simpleName, type.getDescriptor(), modifiers, from(parent, 0, Modifier.PUBLIC), primitive);
 		else return new TypeProxy(simpleName, type.getDescriptor(), modifiers, parent, primitive);
 	}
 
