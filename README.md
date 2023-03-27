@@ -30,11 +30,13 @@ dependencies {
 
 You are going to need an appropriate loader to use Lillero patches: **this is just a library and does nothing by itself**. You need to make it work by loading services implementing the `IInjector` interface, and by calling their `inject(ClassNode, MethodNode)` methods with the appropriate parameters.
 
+Finally, know that you can spare yourself some trouble, by using this [annotation processor](https://git.fantabos.co/lillero-processor/) to reduce boilerplate to a minimum.
+
 #### Tips specific to Minecraft patching
-* Use Searge names in every place you are told to use a name.
-	- Use MCP (AKA unobfuscated) names if you are running from ForgeGradle's runClient task.
+* You want to be using Notch (fully obfuscated) names whenever you are told to reference a class or method by name, since those are the ones that exist at runtime.
+    - Use MCP (AKA unobfuscated) names if you are running from ForgeGradle's runClient task. 
+    - If you are using our loader (see below), use Searge (obfuscated but unique) names in every place you are told to use a name - ModLauncher will do the rest.
 * Use our [loader](https://git.fantabos.co/lillero-loader/) that hooks into Forge's ModLauncher if you're writing a Forge mod.
-* Spare yourself some trouble, and use this [annotation processor](https://git.fantabos.co/lillero-processor/) to reduce boilerplate.
 * Make sure to dunk on all the naysayers who tried to force you to use Mixin!
 
 #### Example Minecraft patch
@@ -45,8 +47,8 @@ The following is an example patch, located at `src/main/java/example/patches/Sam
   public class SamplePatch implements IInjector {
     public String name()        { return "SamplePatch"; }
     public String targetClass() { return "net.minecraft.client.Minecraft"; }
-    public String methodName()  { return "func_71407_l"; } // tick()
-    public String methodDesc()  { return "()V"; }
+    public String methodName()  { return "func_71407_l"; } //Searge name for tick()
+    public String methodDesc()  { return "()V"; } //void, no args
     public void inject(ClassNode clazz, MethodNode main) {
       InsnList insnList = new InsnList();
       insnList.add(new InsnNode(POP));
