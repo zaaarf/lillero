@@ -21,7 +21,7 @@ public class TypeProxy extends QualifiableProxy {
 	public final boolean primitive;
 
 	/**
-	 * Protected constructor, called only from the builder.
+	 * Protected constructor, called only from the builders.
 	 * @param name the name of the class
 	 * @param descriptor the descriptor of the class
 	 * @param modifiers the modifiers of the class
@@ -29,20 +29,32 @@ public class TypeProxy extends QualifiableProxy {
 	 * @param primitive whether the proxy is a primitive
 	 */
 	protected TypeProxy(String name, String descriptor, int modifiers, String parent, boolean primitive) {
-		super(descriptor, modifiers, PackageProxy.from(parent), String.format("%s.%s", parent, name), ProxyType.TYPE);
+		super(
+			descriptor,
+			modifiers,
+			PackageProxy.from(parent),
+			parent == null ? name : String.format("%s.%s", parent, name),
+			ProxyType.TYPE
+		);
 		this.primitive = primitive;
 	}
 
 	/**
-	 * Protected constructor, called only from the builder.
+	 * Protected constructor, called only from the builders.
 	 * @param name the name of the class
 	 * @param descriptor the descriptor of the element
 	 * @param modifiers the modifiers of the class
 	 * @param primitive whether the proxy is a primitive
 	 * @param containerClass the FQN of the parent class of the class
 	 */
-	protected TypeProxy(String name, String descriptor, int modifiers, QualifiableProxy containerClass, boolean primitive) {
-		super(descriptor, modifiers, containerClass, String.format("%s$%s", containerClass.fullyQualifiedName, name), ProxyType.TYPE);
+	protected TypeProxy(String name, String descriptor, int modifiers, TypeProxy containerClass, boolean primitive) {
+		super(
+			descriptor,
+			modifiers,
+			containerClass,
+			String.format("%s$%s", containerClass.fullyQualifiedName, name),
+			ProxyType.TYPE
+		);
 		this.primitive = primitive;
 	}
 
@@ -103,15 +115,6 @@ public class TypeProxy extends QualifiableProxy {
 	}
 
 	/**
-	 * Returns a new instance of {@link TypeProxy.Builder}.
-	 * @param name the name of the class
-	 * @return the builder object for class proxies
-	 */
-	public static Builder builder(String name) {
-		return new Builder(name);
-	}
-
-	/**
 	 * Indicates whether the given object is a proxy for the same element as this.
 	 * @param obj the object to perform
 	 * @return true if it's equal
@@ -119,81 +122,5 @@ public class TypeProxy extends QualifiableProxy {
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof TypeProxy && super.equals(obj);
-	}
-
-	/**
-	 * A builder object for {@link TypeProxy}.
-	 */
-	public static class Builder extends AbstractProxy.Builder<TypeProxy> {
-
-		/**
-		 * Whether the proxy represents a primitive.
-		 */
-		private boolean primitive;
-
-		/**
-		 * The constructor of the builder, used only internally.
-		 * @param name the "simple name" of the class
-		 */
-		Builder(String name) {
-			super(name);
-			this.primitive = false;
-		}
-
-		/**
-		 * Sets this class as an inner class and sets the containing
-		 * class to the given class object.
-		 * @param containerClass the {@link Class} representing the
-		 *                       container class
-		 * @return the builder's state after the change
-		 */
-		public Builder setParent(Class<?> containerClass) {
-			super.setParent(TypeProxy.from(containerClass));
-			return this;
-		}
-
-		/**
-		 * Sets this class as an inner class and builds a {@link TypeProxy}
-		 * from the given parent and modifiers.
-		 * @param parentFQN the fully qualified name of the parent
-		 * @param modifiers the modifiers of the parent (if it's a class)
-		 * @param isParentPackage whether this parent should be interpreted as a package or class
-		 * @return the builder's state after the change
-		 */
-		public Builder setParent(String parentFQN, int modifiers, boolean isParentPackage) {
-			super.setParent(isParentPackage ? PackageProxy.from(parentFQN) : TypeProxy.from(parentFQN, 0, modifiers));
-			return this;
-		}
-
-		/**
-		 * Sets this class as an inner class and builds a {@link TypeProxy}
-		 * from the given parent.
-		 * @param parentFQN the fully qualified name of the parent
-		 * @param isParentPackage whether this parent should be interpreted as a package or class
-		 * @return the builder's state after the change
-		 */
-		public Builder setParent(String parentFQN, boolean isParentPackage) {
-			return this.setParent(parentFQN, 0, isParentPackage);
-		}
-
-		/**
-		 * Sets the primitive flag to true or false, to signal that the type here specified
-		 * is a primitive.
-		 * @param primitive the new state of the primitive flag
-		 * @return the builder's state after the change
-		 */
-		public Builder setPrimitive(boolean primitive) {
-			this.primitive = primitive;
-			return this;
-		}
-
-		/**
-		 * Builds a {@link TypeProxy} of the given kind.
-		 * @return the built {@link TypeProxy}
-		 */
-		@Override
-		public TypeProxy build() {
-			return new TypeProxy(this.name, this.descriptor, this.modifiers, this.parent, this.primitive);
-		}
 	}
 }
