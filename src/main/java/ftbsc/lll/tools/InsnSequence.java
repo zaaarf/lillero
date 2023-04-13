@@ -58,7 +58,7 @@ public class InsnSequence extends InsnList {
 		index = Math.abs(index);
 		if(index > size())
 			throw new IndexOutOfBoundsException();
-		return this.toArray()[size() - index];
+		return super.get(size() - index);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class InsnSequence extends InsnList {
 
 	/**
 	 * Wraps InsnList's add() to throw an exception
-	 * when fed null values.
+	 * when given null values.
 	 * @param node to add
 	 */
 	@Override
