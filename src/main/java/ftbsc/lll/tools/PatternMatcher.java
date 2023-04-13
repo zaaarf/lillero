@@ -83,11 +83,10 @@ public class PatternMatcher {
 				if(predicates.size() == 0) return new InsnSequence(cur); //match whatever
 				first = cur;
 				last = cur;
-				for(int match = 0; match < predicates.size(); last = reverse ? last.getPrevious() : last.getNext()) {
+				for(int match = 0; last != null && match < predicates.size(); last = reverse ? last.getPrevious() : last.getNext()) {
 					if(ignoreLabels && cur.getType() == AbstractInsnNode.LABEL) continue;
 					if(ignoreFrames && cur.getType() == AbstractInsnNode.FRAME) continue;
 					if(ignoreLineNumbers && cur.getType() == AbstractInsnNode.LINE) continue;
-					if(last == null) break;
 					if(!predicates.get(match).test(last)) break;
 					if(match == predicates.size() - 1) {
 						if(reverse) return new InsnSequence(last, first); //we are matching backwards
