@@ -30,13 +30,13 @@ dependencies {
 
 You are going to need an appropriate loader to use Lillero patches: **this is just a library and does nothing by itself**. You need to make it work by loading services implementing the `IInjector` interface, and by calling their `inject(ClassNode, MethodNode)` methods with the appropriate parameters.
 
-Finally, know that you can spare yourself some trouble, by using this [annotation processor](https://git.fantabos.co/lillero-processor/) to reduce boilerplate to a minimum.
+Finally, know that you can spare yourself some trouble, by using this [annotation processor](https://github.com/zaaarf/lillero-processor/) to reduce boilerplate to a minimum.
 
 #### Tips specific to Minecraft patching
 * You want to be using Notch (fully obfuscated) names whenever you are told to reference a class or method by name, since those are the ones that exist at runtime.
     - Use MCP (AKA unobfuscated) names if you are running from ForgeGradle's runClient task. 
     - If you are using our loader (see below), use Searge (obfuscated but unique) names in every place you are told to use a name - ModLauncher will do the rest.
-* Use our [loader](https://git.fantabos.co/lillero-loader/) that hooks into Forge's ModLauncher if you're writing a Forge mod.
+* Use our [loader](https://github.com/zaaarf/lillero-loader/) that hooks into Forge's ModLauncher if you're writing a Forge mod.
 * Make sure to dunk on all the naysayers who tried to force you to use Mixin!
 
 #### Example Minecraft patch
