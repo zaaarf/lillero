@@ -4,11 +4,10 @@ plugins {
 }
 
 archivesBaseName = 'lll'
-version = gitVersion()
+version = gitVersion().split('-').getAt(0).replace('dirty', '')
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_1_8
-	targetCompatibility = JavaVersion.VERSION_1_8
+	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 	withSourcesJar()
 	withJavadocJar()
 }
@@ -24,5 +23,5 @@ dependencies {
 }
 
 jar {
-    archiveFileName = "${jar.archiveBaseName.get()}-${project.version.split('-')[0]}.${jar.archiveExtension.get()}"
+    archiveFileName = "${jar.archiveBaseName.get()}-${project.version}.${jar.archiveExtension.get()}"
 }
