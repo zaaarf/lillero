@@ -21,7 +21,3 @@ dependencies {
     implementation 'org.ow2.asm:asm-util:9.5'
     implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
 }
-
-jar {
-    archiveFileName = "${jar.archiveBaseName.get()}-${project.version}.${jar.archiveExtension.get()}"
-}
