@@ -1,4 +1,4 @@
-package ftbsc.lll.tools.debug;
+package ftbsc.lll.utils.debug;
 
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.AbstractInsnNode;

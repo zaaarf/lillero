@@ -1,4 +1,4 @@
-package ftbsc.lll.tools;
+package ftbsc.lll.utils;
 
 import org.objectweb.asm.Type;
 

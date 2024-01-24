@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static ftbsc.lll.tools.DescriptorBuilder.nameToDescriptor;
+import static ftbsc.lll.utils.DescriptorBuilder.nameToDescriptor;
 
 /**
  * A container for information about class methods to be used

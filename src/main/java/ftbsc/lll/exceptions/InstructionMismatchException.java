@@ -1,6 +1,6 @@
 package ftbsc.lll.exceptions;
 
-import ftbsc.lll.tools.InsnSequence;
+import ftbsc.lll.utils.InsnSequence;
 
 /**
  * Thrown when attempting to build an {@link InsnSequence} between two

@@ -1,4 +1,4 @@
-package ftbsc.lll.tools;
+package ftbsc.lll.utils;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
@@ -10,7 +10,7 @@ import java.util.Comparator;
  * Includes anything from instantiation to variable manipulation - just about
  * anything that loads stuff on or from the stack.
  */
-public class StackTools implements Opcodes {
+public class StackUtils implements Opcodes {
 	/**
 	 * Creates a new instance of an object, given its internal name, constructor descriptor and instructions to load
 	 * the parameters.

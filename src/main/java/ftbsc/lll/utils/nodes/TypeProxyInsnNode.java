@@ -1,4 +1,4 @@
-package ftbsc.lll.tools.nodes;
+package ftbsc.lll.utils.nodes;
 
 import ftbsc.lll.proxies.impl.TypeProxy;
 import org.objectweb.asm.tree.TypeInsnNode;

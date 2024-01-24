@@ -1,13 +1,12 @@
 package ftbsc.lll.proxies.impl;
 
-import ftbsc.lll.proxies.AbstractProxy;
 import ftbsc.lll.proxies.ProxyType;
 import ftbsc.lll.proxies.QualifiableProxy;
 import org.objectweb.asm.Type;
 
 import java.lang.reflect.Modifier;
 
-import static ftbsc.lll.tools.DescriptorBuilder.nameToDescriptor;
+import static ftbsc.lll.utils.DescriptorBuilder.nameToDescriptor;
 
 /**
  * A container for information about classes to be used

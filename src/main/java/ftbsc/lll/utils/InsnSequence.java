@@ -1,4 +1,4 @@
-package ftbsc.lll.tools;
+package ftbsc.lll.utils;
 
 import ftbsc.lll.exceptions.InstructionMismatchException;
 import org.objectweb.asm.tree.AbstractInsnNode;
