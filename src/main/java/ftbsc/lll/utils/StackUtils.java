@@ -71,16 +71,25 @@ public class StackUtils implements Opcodes {
 	 * @return the index value of the new local variable
 	 */
 	public static int addLocalVariable(MethodNode method, String name, String desc, LabelNode start, LabelNode end) {
-		final int targetIndex =
-			method.localVariables
-				.stream()
-				.max(Comparator.comparingInt(v -> v.index))
-				.map(var -> var.desc.equals("J") || var.desc.equals("D")
-					? var.index + 2 //skip two if long or double - major java moment
-					: var.index + 1)
-				.orElse(0);
+		final int targetIndex = findFirstFreeIndex(method);
 		LocalVariableNode variable = new LocalVariableNode(name, desc, null, start, end, targetIndex);
 		method.localVariables.add(variable);
 		return targetIndex;
+	}
+
+	/**
+	 * Finds the first free index in the given {@link MethodNode}.
+	 * Used to create variables.
+	 * @param method the method to look in
+	 * @return the found index
+	 */
+	public static int findFirstFreeIndex(MethodNode method) {
+		return method.localVariables
+			.stream()
+			.max(Comparator.comparingInt(v -> v.index))
+			.map(var -> var.desc.equals("J") || var.desc.equals("D")
+				? var.index + 2 //skip two if long or double - major java moment
+				: var.index + 1)
+			.orElse(0);
 	}
 }
