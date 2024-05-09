@@ -100,7 +100,7 @@ public class FieldProxy extends AbstractProxy {
 
 		/**
 		 * Sets the type of the field to the given type.
-		 * @param fqn – the fully qualified name of the parameter type
+		 * @param fqn the fully qualified name of the parameter type
 		 * @param arrayLevel the array level
 		 * @return the builder's state after the change
 		 */
