@@ -36,7 +36,7 @@ Finally, know that you can spare yourself some trouble, by using this [annotatio
 * In "raw" environments, you want to be using Notch (fully obfuscated) names whenever you are told to reference a class or method by name, since those are the ones that exist at runtime.
     - Use deobfuscated names if you are running from ForgeGradle's or loom's runClient task.
     - If you are using our loader (see below), use intermediary (unreadable but unique) names in every place you are told to use a name - ModLauncher will do the rest.
-    - If you are loading this through (Fabric-ASM)[https://github.com/Chocohead/Fabric-ASM], use intermediary representation.
+    - If you are loading this through [Fabric-ASM](https://github.com/Chocohead/Fabric-ASM), use intermediary representation.
 * Use our [loader](https://github.com/zaaarf/lillero-loader/) that hooks into Forge's ModLauncher if you're writing a modern Forge mod.
 * Make sure to dunk on all the naysayers who tried to force you to use Mixin!
 
