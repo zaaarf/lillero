@@ -38,6 +38,7 @@ Finally, know that you can spare yourself some trouble, by using this [annotatio
     - If you are using our loader (see below), use intermediary (unreadable but unique) names in every place you are told to use a name - ModLauncher will do the rest.
     - If you are loading this through [Fabric-ASM](https://github.com/Chocohead/Fabric-ASM), use intermediary representation.
 * Use our [loader](https://github.com/zaaarf/lillero-loader/) that hooks into Forge's ModLauncher if you're writing a modern Forge mod.
+* Use our [Mixin plugin](https://github.com/zaaarf/lillero-mixin/) if you are constrained to an environment that bundles it (like Fabric).
 * Make sure to dunk on all the naysayers who tried to force you to use Mixin!
 
 #### Example Minecraft patch
@@ -48,8 +49,8 @@ The following is an example patch, located at `src/main/java/example/patches/Sam
   public class SamplePatch implements IInjector {
     public String name()        { return "SamplePatch"; }
     public String targetClass() { return "net.minecraft.client.Minecraft"; }
-    public String methodName()  { return "func_71407_l"; } //Searge name for tick()
-    public String methodDesc()  { return "()V"; } //void, no args
+    public String methodName()  { return "func_71407_l"; } // searge name for tick()
+    public String methodDesc()  { return "()V"; } // void, no args
     public void inject(ClassNode clazz, MethodNode main) {
       InsnList insnList = new InsnList();
       insnList.add(new InsnNode(POP));
