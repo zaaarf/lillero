@@ -1,6 +1,5 @@
 package ftbsc.lll.utils.debug;
 
-import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.util.Printer;
@@ -12,6 +11,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.function.Consumer;
 
 /**
  * A collection of static methods for debugging by printing the ASM bytecode.
@@ -30,22 +30,23 @@ public class BytecodePrinter {
 	private static final TraceMethodVisitor MP = new TraceMethodVisitor(PRINTER);
 
 	/**
-	 * Prints the bytecode of a method using System.out.print().
+	 * Logs the bytecode of a method on System.out.
 	 * @param main the method to print
 	 */
-	public static void printMethod(final MethodNode main) {
-		for (AbstractInsnNode i : main.instructions.toArray())
-			System.out.print(insnToString(i));
+	public static void logMethod(MethodNode main) {
+		logMethod(main, System.out::println);
 	}
 
 	/**
-	 * Logs the bytecode of a method using the ASM logger.
+	 * Logs the bytecode of a method into a given sink.
 	 * @param main the method to print
-	 * @param logger the Log4j {@link Logger} to print it with
+	 * @param logFn a consumer for the string, typically a logging function
+	 * @since 0.6.0
 	 */
-	public static void logMethod(final MethodNode main, final Logger logger) {
-		for (AbstractInsnNode i : main.instructions.toArray())
-			logger.debug(insnToString(i));
+	public static void logMethod(MethodNode main, Consumer<String> logFn) {
+		for(AbstractInsnNode i : main.instructions.toArray()) {
+			logFn.accept(insnToString(i));
+		}
 	}
 
 	/**
@@ -53,10 +54,9 @@ public class BytecodePrinter {
 	 * @param main the method to print
 	 * @param path the file to log it to
 	 */
-	public static void logMethod(final MethodNode main, String path) {
+	public static void logMethod(MethodNode main, String path) {
 		StringBuilder out = new StringBuilder();
-		for (AbstractInsnNode i : main.instructions.toArray())
-			out.append(insnToString(i));
+		logMethod(main, out::append);
 		try {
 			Files.write(Paths.get(path), out.toString().getBytes());
 		} catch (IOException e) {
