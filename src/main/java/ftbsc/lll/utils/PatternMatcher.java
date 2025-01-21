@@ -71,14 +71,14 @@ public class PatternMatcher {
 	 * @param node the {@link MethodNode} to search
 	 * @return the InsnSequence object representing the matched pattern
 	 */
-	public InsnSequence find(MethodNode node) {
-		return find(this.reverse ? node.instructions.getLast() : node.instructions.getFirst());
+	public InsnList find(MethodNode node) {
+		return this.find(this.reverse ? node.instructions.getLast() : node.instructions.getFirst());
 	}
 
 	/**
 	 * Tries to match the given pattern starting from a given node.
 	 * @param node the node to start the search on
-	 * @return the {@link InsnSequence} object representing the matched pattern
+	 * @return the {@link InsnList} object representing the matched pattern
 	 */
 	public InsnSequence find(AbstractInsnNode node) {
 		if(node != null) {
@@ -285,6 +285,11 @@ public class PatternMatcher {
 			return true;
 		}
 
+		private static final BiPredicate<Object, Object> COMPARE_LABELS = (p, ex) -> {
+			LabelNode expected = (LabelNode) ex;
+			return expected.equals(p) || expected.getLabel().equals(p);
+		};
+
 		/**
 		 * Tests whether a given {@link AbstractInsnNode} matches the given opcode and arguments.
 		 * @param i the node to test
@@ -382,16 +387,12 @@ public class PatternMatcher {
 				case AbstractInsnNode.TABLESWITCH_INSN:
 					if(args.length < 4) return false;
 					TableSwitchInsnNode tab = (TableSwitchInsnNode) i;
-					BiPredicate<Object, Object> compareLabels = (p, ex) -> {
-						LabelNode expected = (LabelNode) ex;
-						return expected.equals(p) || expected.getLabel().equals(p);
-					};
 					return args[0] instanceof Integer
 						&& tab.min == (Integer) args[0]
 						&& args[1] instanceof Integer
 						&& tab.min == (Integer) args[1]
-						&& compareLabels.test(args[2], tab.dflt)
-						&& matchList(3, args, tab.labels.toArray(), true, compareLabels);
+						&& COMPARE_LABELS.test(args[2], tab.dflt)
+						&& matchList(3, args, tab.labels.toArray(), true, COMPARE_LABELS);
 				case AbstractInsnNode.VAR_INSN:
 					return args.length == 1
 						&& ((VarInsnNode) i).var == (Integer) args[0];
