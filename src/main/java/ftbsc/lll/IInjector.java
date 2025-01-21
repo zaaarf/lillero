@@ -54,8 +54,7 @@ public interface IInjector {
 
 	/**
 	 * This method is to be called by the launcher after identifying the right class and
-	 * method to patch. The overriding method should contain the logic for actually
-	 * pathing.
+	 * method to patch. The overriding method should contain the actual patching logic.
 	 * @param clazz  the {@link ClassNode} currently being patched
 	 * @param method the {@link MethodNode} of method currently being patched
 	 */
