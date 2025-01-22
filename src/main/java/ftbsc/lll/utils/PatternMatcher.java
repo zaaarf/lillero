@@ -69,7 +69,7 @@ public class PatternMatcher {
 	/**
 	 * Tries to match the given pattern on a given {@link MethodNode}.
 	 * @param node the {@link MethodNode} to search
-	 * @return the InsnSequence object representing the matched pattern
+	 * @return the {@link InsnList} object representing the matched pattern
 	 */
 	public InsnList find(MethodNode node) {
 		return this.find(this.reverse ? node.instructions.getLast() : node.instructions.getFirst());
@@ -84,7 +84,7 @@ public class PatternMatcher {
 		if(node != null) {
 			AbstractInsnNode first, last;
 			for(AbstractInsnNode cur = node; cur != null; cur = this.reverse ? cur.getPrevious() : cur.getNext()) {
-				if(this.predicates.isEmpty()) return new InsnSequence(cur); //match whatever
+				if(this.predicates.isEmpty()) return InsnListUtils.of(cur); //match whatever
 				first = cur;
 				last = cur;
 				for(int match = 0; last != null && match < this.predicates.size(); last = this.reverse ? last.getPrevious() : last.getNext()) {
@@ -95,8 +95,8 @@ public class PatternMatcher {
 					}
 					if(!this.predicates.get(match).test(last)) break;
 					if(match == this.predicates.size() - 1) {
-						if(this.reverse) return new InsnSequence(last, first); //we are matching backwards
-						else return new InsnSequence(first, last);
+						if(this.reverse) return InsnListUtils.between(last, first); //we are matching backwards
+						else return InsnListUtils.between(first, last);
 					} else match++;
 				}
 			}

@@ -37,11 +37,7 @@ public class InsnListUtils {
 			}
 		}
 
-		throw new InstructionMismatchException(String.format(
-			"Nodes %s and %s are not connected.",
-			list.getFirst(),
-			list.getLast()
-		));
+		throw new InstructionMismatchException(list.getFirst(), list.getLast());
 	}
 
 	/**

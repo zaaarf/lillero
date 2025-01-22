@@ -18,30 +18,11 @@ public class StackUtils implements Opcodes {
 	 * @param name the internal name of the object to initialize, where
 	 *             the internal name of a class is its fully qualified name, where '.' are replaced by '/'
 	 * @param desc the descriptor of the constructor to call
-	 * @param args nodes containing instructions to load the constructor arguments, in the right order
-	 * @return an instruction list containing the opcodes needed to create the new object and load it on the stack.
-	 * @deprecated very redundant
-	 */
-	@Deprecated
-	public static InsnList instantiate(String name, String desc, AbstractInsnNode... args) {
-		InsnSequence is = new InsnSequence();
-		is.add(args);
-		return instantiate(name, desc, is);
-	}
-
-	/**
-	 * Creates a new instance of an object, given its internal name, constructor descriptor and instructions to load
-	 * the parameters.
-	 * The created object is loaded on the stack.
-	 * @param name the internal name of the object to initialize, where
-	 *             the internal name of a class is its fully qualified name, where '.' are replaced by '/'
-	 * @param desc the descriptor of the constructor to call
 	 * @param args a list of instructions loading the constructor arguments onto the stack in the correct order
 	 * @return an instruction list containing the opcodes needed to create the new object and load it on the stack.
 	 */
 	public static InsnList instantiate(String name, String desc, InsnList args) {
-		InsnSequence list = new InsnSequence();
-		list.add(new TypeInsnNode(NEW, name), new InsnNode(DUP));
+		InsnList list = InsnListUtils.of(new TypeInsnNode(NEW, name), new InsnNode(DUP));
 		if(args != null) list.add(args);
 		list.add(new MethodInsnNode(INVOKESPECIAL, name, "<init>", desc, false));
 		return list;
