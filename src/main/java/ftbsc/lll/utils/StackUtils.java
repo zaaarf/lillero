@@ -20,7 +20,9 @@ public class StackUtils implements Opcodes {
 	 * @param desc the descriptor of the constructor to call
 	 * @param args nodes containing instructions to load the constructor arguments, in the right order
 	 * @return an instruction list containing the opcodes needed to create the new object and load it on the stack.
+	 * @deprecated very redundant
 	 */
+	@Deprecated
 	public static InsnList instantiate(String name, String desc, AbstractInsnNode... args) {
 		InsnSequence is = new InsnSequence();
 		is.add(args);

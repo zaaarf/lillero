@@ -118,8 +118,7 @@ public class DescriptorBuilder {
 	public String build() {
 		StringBuilder sb = new StringBuilder();
 		sb.append('(');
-		for(String p : params)
-			sb.append(p);
+		for(String p : params) sb.append(p);
 		sb.append(')').append(returnType);
 		return sb.toString();
 	}
@@ -133,8 +132,7 @@ public class DescriptorBuilder {
 	 */
 	public static String nameToDescriptor(String name, int arrayLevel) {
 		StringBuilder sb = new StringBuilder();
-		for(int i = 0; i < arrayLevel; i++)
-			sb.append('[');
+		for(int i = 0; i < arrayLevel; i++) sb.append('[');
 		sb.append('L').append(name.replace('.', '/')).append(';');
 		return sb.toString();
 	}

@@ -9,7 +9,10 @@ import java.util.Objects;
 /**
  * Represents a sequence of instructions contained within two given nodes.
  * Extends {@link InsnList}, but provides additional flexibility and features.
+ * @deprecated Riddled with bugs, poorly named and hardly useful.
+ *             Will be removed (or possibly replaced) in an upcoming release.
  */
+@Deprecated
 public class InsnSequence extends InsnList {
 	/**
 	 * Public constructor.

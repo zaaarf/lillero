@@ -80,7 +80,7 @@ public class PatternMatcher {
 	 * @param node the node to start the search on
 	 * @return the {@link InsnList} object representing the matched pattern
 	 */
-	public InsnSequence find(AbstractInsnNode node) {
+	public InsnList find(AbstractInsnNode node) {
 		if(node != null) {
 			AbstractInsnNode first, last;
 			for(AbstractInsnNode cur = node; cur != null; cur = this.reverse ? cur.getPrevious() : cur.getNext()) {
