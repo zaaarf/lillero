@@ -337,10 +337,14 @@ public class PatternMatcher {
 						&& matchList(2, args, lookup.labels.toArray(), false, Object::equals);
 				case AbstractInsnNode.MULTIANEWARRAY_INSN:
 					MultiANewArrayInsnNode mana = (MultiANewArrayInsnNode) i;
-					return args.length == 2 // TODO add proxy support
-						&& mana.desc.equals(args[0])
+					return args.length == 2
 						&& args[1] instanceof Integer
-						&& mana.dims == (Integer) args[1];
+						&& mana.dims == (Integer) args[1]
+						&& mana.desc.equals(
+							args[0] instanceof TypeProxy
+								? ((TypeProxy) args[0]).descriptor
+								: args[0]
+						);
 				case AbstractInsnNode.METHOD_INSN:
 					MethodInsnNode method = (MethodInsnNode) i;
 					boolean methodMatch = true;

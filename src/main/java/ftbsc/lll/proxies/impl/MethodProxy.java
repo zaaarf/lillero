@@ -51,7 +51,8 @@ public class MethodProxy extends AbstractProxy {
 	 * @param m the {@link Method} object corresponding to this.
 	 */
 	public MethodProxy(Method m) {
-		this(m.getName(),
+		this(
+			m.getName(),
 			m.getModifiers(),
 			TypeProxy.from(m.getDeclaringClass()),
 			Type.getArgumentTypes(m),
@@ -195,7 +196,8 @@ public class MethodProxy extends AbstractProxy {
 				this.modifiers,
 				this.parent,
 				this.parameters.toArray(new Type[0]),
-				this.returnType);
+				this.returnType
+			);
 		}
 	}
 }
