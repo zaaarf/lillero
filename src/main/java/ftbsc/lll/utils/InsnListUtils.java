@@ -81,6 +81,7 @@ public class InsnListUtils {
 
 	/**
 	 * Cut a number of nodes from the list.
+	 * @param list the list to perform the operation on
 	 * @param amount how many nodes to cut
 	 * @param reverse true if it should cut from the end, false otherwise
 	 */
