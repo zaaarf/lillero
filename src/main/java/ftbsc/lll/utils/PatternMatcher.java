@@ -366,8 +366,8 @@ public class PatternMatcher {
 						case 3:
 							return methodMatch
 								&& args[0].equals(method.owner)
-								&& args[1].equals(method.desc)
-								&& args[2].equals(method.name);
+								&& args[1].equals(method.name)
+								&& args[2].equals(method.desc);
 					}
 					return false;
 				case AbstractInsnNode.FIELD_INSN:
