@@ -44,11 +44,6 @@ public class FieldProxy extends AbstractProxy {
 		return new Builder(name);
 	}
 
-	/**
-	 * Indicates whether the given object is a proxy for the same element as this.
-	 * @param obj the object to perform
-	 * @return true if it's equal
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof FieldProxy && super.equals(obj);
@@ -109,10 +104,6 @@ public class FieldProxy extends AbstractProxy {
 			return this;
 		}
 
-		/**
-		 * Builds a {@link FieldProxy} of the given kind.
-		 * @return the built {@link FieldProxy}
-		 */
 		@Override
 		public FieldProxy build() {
 			return new FieldProxy(this.name, this.descriptor, this.modifiers, this.parent);

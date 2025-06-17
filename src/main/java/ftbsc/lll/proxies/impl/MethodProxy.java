@@ -69,11 +69,6 @@ public class MethodProxy extends AbstractProxy {
 		return new Builder(name);
 	}
 
-	/**
-	 * Indicates whether the given object is a proxy for the same element as this.
-	 * @param obj the object to perform
-	 * @return true if it's equal
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if(obj instanceof MethodProxy) {
@@ -172,12 +167,7 @@ public class MethodProxy extends AbstractProxy {
 			return this;
 		}
 
-		/**
-		 * Sets the type of the method to the given descriptor,
-		 * and extracts return and parameter types from it.
-		 * @param descr the descriptor
-		 * @return the builder's state after the change
-		 */
+		@Override
 		public Builder setDescriptor(String descr) {
 			super.setDescriptor(descr);
 			this.parameters.addAll(Arrays.asList(Type.getArgumentTypes(descr)));
@@ -185,10 +175,6 @@ public class MethodProxy extends AbstractProxy {
 			return this;
 		}
 
-		/**
-		 * Builds a {@link MethodProxy} of the given kind.
-		 * @return the built {@link MethodProxy}
-		 */
 		@Override
 		public MethodProxy build() {
 			return new MethodProxy(

@@ -55,11 +55,6 @@ public abstract class QualifiableProxy extends AbstractProxy {
 		else return split[split.length - 1];
 	}
 
-	/**
-	 * Indicates whether the given object is a proxy for the same element as this.
-	 * @param obj the object to perform
-	 * @return true if it's equal
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof QualifiableProxy && super.equals(obj) && ((QualifiableProxy) obj).fullyQualifiedName.equals(fullyQualifiedName);

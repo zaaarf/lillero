@@ -113,11 +113,6 @@ public class TypeProxy extends QualifiableProxy {
 			);
 	}
 
-	/**
-	 * Indicates whether the given object is a proxy for the same element as this.
-	 * @param obj the object to perform
-	 * @return true if it's equal
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof TypeProxy && super.equals(obj);
