@@ -1,6 +1,5 @@
 package ftbsc.lll.utils;
 
-import ftbsc.lll.exceptions.InstructionMismatchException;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 
@@ -17,34 +16,16 @@ public class InsnListUtils {
 	public static InsnList of(AbstractInsnNode... nodes) {
 		InsnList list = new InsnList();
 		for(AbstractInsnNode node : nodes) {
-		list.add(node);
+			list.add(node);
 		}
 		return list;
-	}
-
-	/**
-	 * Creates a sublist with all the nodes between the given extremes.
-	 * @param startNode the starting node of the pattern, must be non-null
-	 * @param endNode the first node of the pattern, must be non-null
-	 * @return the resulting {@link InsnList}
-	 */
-	public static InsnList between(AbstractInsnNode startNode, AbstractInsnNode endNode) {
-		InsnList list = new InsnList();
-		for(; startNode != null; startNode = startNode.getNext()) {
-			list.add(startNode);
-			if(startNode == endNode) {
-				return list;
-			}
-		}
-
-		throw new InstructionMismatchException(list.getFirst(), list.getLast());
 	}
 
 	/**
 	 * Replaces a node with another one. Mostly used internally.
 	 * @param list the list to perform the operation on
 	 * @param oldNode node to replace
-	 * @param newNode new node
+	 * @param newNode new node (which must not belong to any {@link InsnList})
 	 */
 	public static void replaceNode(InsnList list, AbstractInsnNode oldNode, AbstractInsnNode newNode) {
 		list.insert(oldNode, newNode);
