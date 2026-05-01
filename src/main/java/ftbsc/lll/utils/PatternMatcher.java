@@ -50,8 +50,13 @@ public class PatternMatcher {
 	 * @param ignoreFrames whether FRAME instructions should be ignored
 	 * @param ignoreLineNumbers whether LINENUMBER instructions should be ignored
 	 */
-	private PatternMatcher(List<Predicate<AbstractInsnNode>> predicates, boolean reverse,
-	                       boolean ignoreLabels, boolean ignoreFrames, boolean ignoreLineNumbers) {
+	private PatternMatcher(
+		List<Predicate<AbstractInsnNode>> predicates,
+		boolean reverse,
+		boolean ignoreLabels,
+		boolean ignoreFrames,
+		boolean ignoreLineNumbers
+	) {
 		this.predicates = predicates;
 		this.reverse = reverse;
 		this.ignoreLabels = ignoreLabels;
@@ -70,6 +75,7 @@ public class PatternMatcher {
 	 * Tries to match the given pattern on a given {@link MethodNode}.
 	 * @param node the {@link MethodNode} to search
 	 * @return the {@link InsnList} object representing the matched pattern
+	 * @throws PatternNotFoundException if it does not find the pattern
 	 */
 	public InsnList find(MethodNode node) {
 		return this.find(this.reverse ? node.instructions.getLast() : node.instructions.getFirst());
@@ -79,6 +85,7 @@ public class PatternMatcher {
 	 * Tries to match the given pattern starting from a given node.
 	 * @param node the node to start the search on
 	 * @return the {@link InsnList} object representing the matched pattern
+	 * @throws PatternNotFoundException if it does not find the pattern
 	 */
 	public InsnSubList find(AbstractInsnNode node) {
 		if(node != null) {
