@@ -718,7 +718,7 @@ public class PatchUtils implements Opcodes {
 	}
 
 	/**
-	 * Loads the given integer as a constant.
+	 * Loads the given integer as a constant onto the stack.
 	 * @param i the constant to load
 	 * @return a node that can load the constant
 	 */
@@ -744,7 +744,7 @@ public class PatchUtils implements Opcodes {
 	}
 
 	/**
-	 * Loads the given long as a constant.
+	 * Loads the given long as a constant onto the stack.
 	 * @param l the constant to load
 	 * @return a node that can load the constant
 	 */
@@ -759,7 +759,7 @@ public class PatchUtils implements Opcodes {
 	}
 
 	/**
-	 * Loads the given float as a constant.
+	 * Loads the given float as a constant onto the stack.
 	 * @param f the constant to load
 	 * @return a node that can load the constant
 	 */
@@ -776,7 +776,7 @@ public class PatchUtils implements Opcodes {
 	}
 
 	/**
-	 * Loads the given double as a constant.
+	 * Loads the given double as a constant onto the stack.
 	 * @param d the constant to load
 	 * @return a node that can load the constant
 	 */
@@ -788,6 +788,14 @@ public class PatchUtils implements Opcodes {
 		} else {
 			return new LdcInsnNode(d);
 		}
+	}
+
+	/**
+	 * Loads a null constant onto the stack.
+	 * @return a node that can load a null constant
+	 */
+	public static AbstractInsnNode anull() {
+		return new InsnNode(ACONST_NULL);
 	}
 
 	/**
