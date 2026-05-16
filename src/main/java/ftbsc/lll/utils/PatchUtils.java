@@ -10,6 +10,9 @@ import org.objectweb.asm.tree.*;
 
 /**
  * Utilities for writing patches.
+ * Note that in ASM any node may only be owned by one list at a time.
+ * This means that these utils may turn into footguns for unusual use cases.
+ * Like always with bytecode, exercise caution.
  * @author zaaarf
  */
 public class PatchUtils implements Opcodes {
@@ -21,7 +24,7 @@ public class PatchUtils implements Opcodes {
 	 * @return the matched sequence
 	 * @throws PatternNotFoundException if it does not find the pattern
 	 */
-	public static InsnList fastMatch(MethodNode method, int... opcodes) {
+	public static InsnList match(MethodNode method, int... opcodes) {
 		return PatternMatcher.builder().opcodes(opcodes).ignoreNoOps().build().find(method);
 	}
 
@@ -141,7 +144,7 @@ public class PatchUtils implements Opcodes {
 
 	/**
 	 * Builds a sequence that invokes the given nodes if the given {@link FieldProxy}
-	 * is found to be greater to the given value.
+	 * is found to be greater than the given value.
 	 * @param fp the proxy to check
 	 * @param value the value to compare against
 	 * @param nodes the nodes to invoke if the check passes
@@ -415,6 +418,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be equal to the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -427,6 +431,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be not equal to the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -439,6 +444,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be less or equal to the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -451,6 +457,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be less than the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -463,6 +470,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be greater or equal to the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -475,6 +483,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be greater than the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -487,6 +496,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be equal to the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -500,6 +510,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be not equal to the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -513,6 +524,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be less or equal to the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -526,6 +538,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be less than the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -539,6 +552,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be greater or equal to the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -552,6 +566,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be greater than the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -565,6 +580,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be equal to the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -578,6 +594,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be not equal to the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -591,6 +608,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be less or equal to the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -604,6 +622,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be less than the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -617,6 +636,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be greater or equal to the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -630,6 +650,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be greater than the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -643,6 +664,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be equal to the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -656,6 +678,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be not equal to the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -669,6 +692,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be less or equal to the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -682,6 +706,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be less than the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -695,6 +720,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be greater or equal to the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -708,6 +734,7 @@ public class PatchUtils implements Opcodes {
 	 * Builds a sequence that invokes the given nodes if the element on the stack is
 	 * found to be greater than the given value.
 	 * @param preNodes the nodes to load the item on the stack (consumes the value)
+	 * @param value the value to load
 	 * @param nodes the nodes to invoke if the check passes
 	 * @return the built sequence
 	 */
@@ -739,7 +766,13 @@ public class PatchUtils implements Opcodes {
 			case -1:
 				return node(ICONST_M1);
 			default:
-				return new LdcInsnNode(i);
+				if(i >= Byte.MIN_VALUE && i <= Byte.MAX_VALUE) {
+					return new IntInsnNode(BIPUSH, i);
+				} else if(i >= Short.MIN_VALUE && i <= Short.MAX_VALUE) {
+					return new IntInsnNode(SIPUSH, i);
+				} else {
+					return new LdcInsnNode(i);
+				}
 		}
 	}
 
@@ -749,9 +782,9 @@ public class PatchUtils implements Opcodes {
 	 * @return a node that can load the constant
 	 */
 	public static AbstractInsnNode lconst(long l) {
-		if(l == 0F) {
+		if(l == 0L) {
 			return node(LCONST_0);
-		} else if(l == 1F) {
+		} else if(l == 1L) {
 			return node(LCONST_1);
 		} else {
 			return new LdcInsnNode(l);
@@ -918,7 +951,7 @@ public class PatchUtils implements Opcodes {
 	/**
 	 * Inserts the given node after the sequence found by the given matcher within the given method.
 	 * @param method the method to add the nodes in
-	 * @param matcher the built matcher to find the pattern after which to append
+	 * @param matcher the built matcher to find the pattern before which to append
 	 * @param node the nodes to insert
 	 */
 	public static void insertBefore(MethodNode method, PatternMatcher matcher, AbstractInsnNode node) {
@@ -926,9 +959,9 @@ public class PatchUtils implements Opcodes {
 	}
 
 	/**
-	 * Inserts the given node after the given node within the given method.
+	 * Inserts the given node before the given node within the given method.
 	 * @param method the method to add the nodes in
-	 * @param beforeNode the node to insert them after
+	 * @param beforeNode the node to insert them before
 	 * @param nodes the node to insert
 	 */
 	public static void insertBefore(MethodNode method, AbstractInsnNode beforeNode, AbstractInsnNode... nodes) {
@@ -936,9 +969,9 @@ public class PatchUtils implements Opcodes {
 	}
 
 	/**
-	 * Inserts the given nodes after the given node within the given method.
+	 * Inserts the given nodes before the given node within the given method.
 	 * @param method the method to add the nodes in
-	 * @param matcher the built matcher to find the pattern after which to append
+	 * @param matcher the built matcher to find the pattern before which to append
 	 * @param nodes the nodes to insert
 	 */
 	public static void insertBefore(MethodNode method, PatternMatcher matcher, AbstractInsnNode... nodes) {
