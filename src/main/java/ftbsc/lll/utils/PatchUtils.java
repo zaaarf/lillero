@@ -3,8 +3,10 @@ package ftbsc.lll.utils;
 import ftbsc.lll.exceptions.PatternNotFoundException;
 import ftbsc.lll.proxies.impl.FieldProxy;
 import ftbsc.lll.proxies.impl.MethodProxy;
+import ftbsc.lll.proxies.impl.TypeProxy;
 import ftbsc.lll.utils.nodes.FieldProxyInsnNode;
 import ftbsc.lll.utils.nodes.MethodProxyInsnNode;
+import ftbsc.lll.utils.nodes.TypeProxyInsnNode;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
@@ -1007,6 +1009,24 @@ public class PatchUtils implements Opcodes {
 	}
 
 	/**
+	 * Invokes an instanceof check on the last element on the stack.
+	 * @param proxy the proxy for the type to check
+	 * @return the created node
+	 */
+	public static TypeProxyInsnNode instanceOf(TypeProxy proxy) {
+		return new TypeProxyInsnNode(INSTANCEOF, proxy);
+	}
+
+	/**
+	 * Invokes an instanceof check on the last element on the stack.
+	 * @param type the internal name (slash-separated fully qualified name) of the type
+	 * @return the created node
+	 */
+	public static TypeInsnNode instanceOf(String type) {
+		return new TypeInsnNode(INSTANCEOF, type);
+	}
+
+	/**
 	 * Invokes statically the given method proxy.
 	 * @param mp the proxy
 	 * @return the created node
@@ -1043,7 +1063,6 @@ public class PatchUtils implements Opcodes {
 	public static FieldProxyInsnNode putStatic(FieldProxy fp) {
 		return new FieldProxyInsnNode(PUTSTATIC, fp);
 	}
-
 
 	/**
 	 * Gets the static field.

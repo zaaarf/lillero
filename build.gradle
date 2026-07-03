@@ -1,8 +1,10 @@
 plugins {
     id 'java-library'
     id 'com.palantir.git-version' version '0.13.0'
+	id 'foo.zaaarf.zipdist' version '1.1.1'
 }
 
+group = 'ftbsc'
 archivesBaseName = 'lll'
 version = versionDetails().lastTag
 
