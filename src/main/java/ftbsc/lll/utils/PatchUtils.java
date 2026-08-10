@@ -30,11 +30,33 @@ public class PatchUtils implements Opcodes {
 		return PatternMatcher.builder().opcodes(opcodes).ignoreNoOps().build().find(method);
 	}
 
-	private static InsnList _if(InsnList preNodes, int jumpIfCheck, InsnList nodes) {
+	/**
+	 * Builds and sets a {@link PatternMatcher} on the given method,
+	 * looking for a node identical to the given one
+	 * @param method the method to match in
+	 * @param opcode the opcode
+	 * @param args the node arguments
+	 * @return the matched sequence
+	 * @see PatternMatcher.Builder#node(int, Object...) for usage details
+	 * @throws PatternNotFoundException if it does not find the pattern
+	 */
+	public static InsnList matchNode(MethodNode method, int opcode, Object... args) {
+		return PatternMatcher.builder().node(opcode, args).ignoreNoOps().build().find(method);
+	}
+
+	/**
+	 * Builds a sequence that invokes the given nodes if the preNodes produce a stack
+	 * matching the given opcode.
+	 * @param jumpOpcode the opcode to use (must be a jump operation)
+	 * @param preNodes the nodes to invoke before the if check
+	 * @param nodes the nodes to invoke if the check passes
+	 * @return the built sequence
+	 */
+	public static InsnList ifOp(int jumpOpcode, InsnList preNodes, InsnList nodes) {
 		InsnList lst = new InsnList();
 		LabelNode skip = new LabelNode();
 		lst.add(preNodes);
-		lst.add(new JumpInsnNode(jumpIfCheck, skip));
+		lst.add(jump(jumpOpcode, skip));
 		lst.add(nodes);
 		lst.add(skip);
 		return lst;
@@ -380,7 +402,7 @@ public class PatchUtils implements Opcodes {
 	 * @return the built sequence
 	 */
 	public static InsnList ifTrue(InsnList preNodes, InsnList nodes) {
-		return _if(preNodes, IFEQ, nodes);
+		return ifOp(IFEQ, preNodes, nodes);
 	}
 
 	/**
@@ -391,7 +413,7 @@ public class PatchUtils implements Opcodes {
 	 * @return the built sequence
 	 */
 	public static InsnList ifFalse(InsnList preNodes, InsnList nodes) {
-		return _if(preNodes, IFNE, nodes);
+		return ifOp(IFNE, preNodes, nodes);
 	}
 
 	/**
@@ -402,7 +424,7 @@ public class PatchUtils implements Opcodes {
 	 * @return the built sequence
 	 */
 	public static InsnList ifNull(InsnList preNodes, InsnList nodes) {
-		return _if(preNodes, IFNONNULL, nodes);
+		return ifOp(IFNONNULL, preNodes, nodes);
 	}
 
 	/**
@@ -413,7 +435,7 @@ public class PatchUtils implements Opcodes {
 	 * @return the built sequence
 	 */
 	public static InsnList ifNonNull(InsnList preNodes, InsnList nodes) {
-		return _if(preNodes, IFNULL, nodes);
+		return ifOp(IFNULL, preNodes, nodes);
 	}
 
 	/**
@@ -426,7 +448,7 @@ public class PatchUtils implements Opcodes {
 	 */
 	public static InsnList ifEqual(InsnList preNodes, int value, InsnList nodes) {
 		preNodes.add(iconst(value));
-		return _if(preNodes, IF_ICMPNE, nodes);
+		return ifOp(IF_ICMPNE, preNodes, nodes);
 	}
 
 	/**
@@ -439,7 +461,7 @@ public class PatchUtils implements Opcodes {
 	 */
 	public static InsnList ifNotEqual(InsnList preNodes, int value, InsnList nodes) {
 		preNodes.add(iconst(value));
-		return _if(preNodes, IF_ICMPEQ, nodes);
+		return ifOp(IF_ICMPEQ, preNodes, nodes);
 	}
 
 	/**
@@ -452,7 +474,7 @@ public class PatchUtils implements Opcodes {
 	 */
 	public static InsnList ifLessOrEqual(InsnList preNodes, int value, InsnList nodes) {
 		preNodes.add(iconst(value));
-		return _if(preNodes, IF_ICMPGT, nodes);
+		return ifOp(IF_ICMPGT, preNodes, nodes);
 	}
 
 	/**
@@ -465,7 +487,7 @@ public class PatchUtils implements Opcodes {
 	 */
 	public static InsnList ifLess(InsnList preNodes, int value, InsnList nodes) {
 		preNodes.add(iconst(value));
-		return _if(preNodes, IF_ICMPGE, nodes);
+		return ifOp(IF_ICMPGE, preNodes, nodes);
 	}
 
 	/**
@@ -478,7 +500,7 @@ public class PatchUtils implements Opcodes {
 	 */
 	public static InsnList ifGreaterOrEqual(InsnList preNodes, int value, InsnList nodes) {
 		preNodes.add(iconst(value));
-		return _if(preNodes, IF_ICMPLT, nodes);
+		return ifOp(IF_ICMPLT, preNodes, nodes);
 	}
 
 	/**
@@ -491,7 +513,7 @@ public class PatchUtils implements Opcodes {
 	 */
 	public static InsnList ifGreater(InsnList preNodes, int value, InsnList nodes) {
 		preNodes.add(iconst(value));
-		return _if(preNodes, IF_ICMPLE, nodes);
+		return ifOp(IF_ICMPLE, preNodes, nodes);
 	}
 
 	/**
@@ -505,7 +527,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifEqual(InsnList preNodes, long value, InsnList nodes) {
 		preNodes.add(lconst(value));
 		preNodes.add(node(LCMP));
-		return _if(preNodes, IFNE, nodes);
+		return ifOp(IFNE, preNodes, nodes);
 	}
 
 	/**
@@ -519,7 +541,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifNotEqual(InsnList preNodes, long value, InsnList nodes) {
 		preNodes.add(lconst(value));
 		preNodes.add(node(LCMP));
-		return _if(preNodes, IFEQ, nodes);
+		return ifOp(IFEQ, preNodes, nodes);
 	}
 
 	/**
@@ -533,7 +555,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifLessOrEqual(InsnList preNodes, long value, InsnList nodes) {
 		preNodes.add(lconst(value));
 		preNodes.add(node(LCMP));
-		return _if(preNodes, IFGT, nodes);
+		return ifOp(IFGT, preNodes, nodes);
 	}
 
 	/**
@@ -547,7 +569,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifLess(InsnList preNodes, long value, InsnList nodes) {
 		preNodes.add(lconst(value));
 		preNodes.add(node(LCMP));
-		return _if(preNodes, IFGE, nodes);
+		return ifOp(IFGE, preNodes, nodes);
 	}
 
 	/**
@@ -561,7 +583,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifGreaterOrEqual(InsnList preNodes, long value, InsnList nodes) {
 		preNodes.add(lconst(value));
 		preNodes.add(node(LCMP));
-		return _if(preNodes, IFLT, nodes);
+		return ifOp(IFLT, preNodes, nodes);
 	}
 
 	/**
@@ -575,7 +597,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifGreater(InsnList preNodes, long value, InsnList nodes) {
 		preNodes.add(lconst(value));
 		preNodes.add(node(LCMP));
-		return _if(preNodes, IFLE, nodes);
+		return ifOp(IFLE, preNodes, nodes);
 	}
 
 	/**
@@ -589,7 +611,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifEqual(InsnList preNodes, float value, InsnList nodes) {
 		preNodes.add(fconst(value));
 		preNodes.add(node(FCMPL));
-		return _if(preNodes, IFNE, nodes);
+		return ifOp(IFNE, preNodes, nodes);
 	}
 
 	/**
@@ -603,7 +625,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifNotEqual(InsnList preNodes, float value, InsnList nodes) {
 		preNodes.add(fconst(value));
 		preNodes.add(node(FCMPL));
-		return _if(preNodes, IFEQ, nodes);
+		return ifOp(IFEQ, preNodes, nodes);
 	}
 
 	/**
@@ -617,7 +639,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifLessOrEqual(InsnList preNodes, float value, InsnList nodes) {
 		preNodes.add(fconst(value));
 		preNodes.add(node(FCMPG));
-		return _if(preNodes, IFGT, nodes);
+		return ifOp(IFGT, preNodes, nodes);
 	}
 
 	/**
@@ -631,7 +653,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifLess(InsnList preNodes, float value, InsnList nodes) {
 		preNodes.add(fconst(value));
 		preNodes.add(node(FCMPG));
-		return _if(preNodes, IFGE, nodes);
+		return ifOp(IFGE, preNodes, nodes);
 	}
 
 	/**
@@ -645,7 +667,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifGreaterOrEqual(InsnList preNodes, float value, InsnList nodes) {
 		preNodes.add(fconst(value));
 		preNodes.add(node(FCMPL));
-		return _if(preNodes, IFLT, nodes);
+		return ifOp(IFLT, preNodes, nodes);
 	}
 
 	/**
@@ -659,7 +681,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifGreater(InsnList preNodes, float value, InsnList nodes) {
 		preNodes.add(fconst(value));
 		preNodes.add(node(FCMPL));
-		return _if(preNodes, IFLE, nodes);
+		return ifOp(IFLE, preNodes, nodes);
 	}
 
 	/**
@@ -673,7 +695,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifEqual(InsnList preNodes, double value, InsnList nodes) {
 		preNodes.add(dconst(value));
 		preNodes.add(node(DCMPL));
-		return _if(preNodes, IFNE, nodes);
+		return ifOp(IFNE, preNodes, nodes);
 	}
 
 	/**
@@ -687,7 +709,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifNotEqual(InsnList preNodes, double value, InsnList nodes) {
 		preNodes.add(dconst(value));
 		preNodes.add(node(DCMPL));
-		return _if(preNodes, IFEQ, nodes);
+		return ifOp(IFEQ, preNodes, nodes);
 	}
 
 	/**
@@ -701,7 +723,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifLessOrEqual(InsnList preNodes, double value, InsnList nodes) {
 		preNodes.add(dconst(value));
 		preNodes.add(node(DCMPG));
-		return _if(preNodes, IFGT, nodes);
+		return ifOp(IFGT, preNodes, nodes);
 	}
 
 	/**
@@ -715,7 +737,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifLess(InsnList preNodes, double value, InsnList nodes) {
 		preNodes.add(dconst(value));
 		preNodes.add(node(DCMPG));
-		return _if(preNodes, IFGE, nodes);
+		return ifOp(IFGE, preNodes, nodes);
 	}
 
 	/**
@@ -729,7 +751,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifGreaterOrEqual(InsnList preNodes, double value, InsnList nodes) {
 		preNodes.add(dconst(value));
 		preNodes.add(node(DCMPL));
-		return _if(preNodes, IFLT, nodes);
+		return ifOp(IFLT, preNodes, nodes);
 	}
 
 	/**
@@ -743,7 +765,7 @@ public class PatchUtils implements Opcodes {
 	public static InsnList ifGreater(InsnList preNodes, double value, InsnList nodes) {
 		preNodes.add(dconst(value));
 		preNodes.add(node(DCMPL));
-		return _if(preNodes, IFLE, nodes);
+		return ifOp(IFLE, preNodes, nodes);
 	}
 
 	/**
@@ -834,15 +856,6 @@ public class PatchUtils implements Opcodes {
 	}
 
 	/**
-	 * Inserts the given node at the start at the given method.
-	 * @param method the method to add the nodes in
-	 * @param node the node to insert
-	 */
-	public static void insertFirst(MethodNode method, AbstractInsnNode node) {
-		method.instructions.insert(node);
-	}
-
-	/**
 	 * Inserts the given nodes at the start at the given method.
 	 * @param method the method to add the nodes in
 	 * @param nodes the nodes to insert
@@ -878,26 +891,6 @@ public class PatchUtils implements Opcodes {
 	 */
 	public static void insertAfter(MethodNode method, PatternMatcher matcher, InsnList nodes) {
 		method.instructions.insert(matcher.find(method).getLast(), nodes);
-	}
-
-	/**
-	 * Inserts the given node after a certain node within the given method.
-	 * @param method the method to add the nodes in
-	 * @param afterNode the node to insert them after
-	 * @param node the node to insert
-	 */
-	public static void insertAfter(MethodNode method, AbstractInsnNode afterNode, AbstractInsnNode node) {
-		method.instructions.insert(afterNode, node);
-	}
-
-	/**
-	 * Inserts the given node after the given node within the given method.
-	 * @param method the method to add the nodes in
-	 * @param matcher the built matcher to find the pattern after which to append
-	 * @param node the node to insert
-	 */
-	public static void insertAfter(MethodNode method, PatternMatcher matcher, AbstractInsnNode node) {
-		method.instructions.insert(matcher.find(method).getLast(), node);
 	}
 
 	/**
@@ -944,26 +937,6 @@ public class PatchUtils implements Opcodes {
 	 * Inserts the given node before the given node within the given method.
 	 * @param method the method to add the nodes in
 	 * @param beforeNode the node to insert them before
-	 * @param node the node to insert
-	 */
-	public static void insertBefore(MethodNode method, AbstractInsnNode beforeNode, AbstractInsnNode node) {
-		method.instructions.insertBefore(beforeNode, node);
-	}
-
-	/**
-	 * Inserts the given node after the sequence found by the given matcher within the given method.
-	 * @param method the method to add the nodes in
-	 * @param matcher the built matcher to find the pattern before which to append
-	 * @param node the nodes to insert
-	 */
-	public static void insertBefore(MethodNode method, PatternMatcher matcher, AbstractInsnNode node) {
-		method.instructions.insertBefore(matcher.find(method).getFirst(), node);
-	}
-
-	/**
-	 * Inserts the given node before the given node within the given method.
-	 * @param method the method to add the nodes in
-	 * @param beforeNode the node to insert them before
 	 * @param nodes the node to insert
 	 */
 	public static void insertBefore(MethodNode method, AbstractInsnNode beforeNode, AbstractInsnNode... nodes) {
@@ -981,13 +954,85 @@ public class PatchUtils implements Opcodes {
 	}
 
 	/**
+	 * Inserts the given nodes before and after a certain node within the given method.
+	 * @param method the method to add the nodes in
+	 * @param node the node to insert them around
+	 * @param before the nodes to insert before
+	 * @param after the nodes to insert after
+	 */
+	public static void insertAround(MethodNode method, AbstractInsnNode node, InsnList before, InsnList after) {
+		insertBefore(method, node, before);
+		insertAfter(method, node, after);
+	}
+
+	/**
+	 * Inserts the given nodes before and after a certain node within the given method.
+	 * @param method the method to add the nodes in
+	 * @param matcher the built matcher to find the pattern around which to append
+	 * @param before the nodes to insert before
+	 * @param after the nodes to insert after
+	 */
+	public static void insertAround(MethodNode method, PatternMatcher matcher, InsnList before, InsnList after) {
+		insertBefore(method, matcher, before);
+		insertAfter(method, matcher, after);
+	}
+
+	/**
+	 * Skips the given node and executes the given list instead.
+	 * This is a "safer" alternative to straight up deleting the node.
+	 * @param method the method to add the nodes in
+	 * @param node the node to skip
+	 * @param instead the list of opcodes to use instead
+	 */
+	public static void skip(MethodNode method, AbstractInsnNode node, InsnList instead) {
+		LabelNode ln = new LabelNode();
+		insertBefore(method, node, jump(GOTO, ln));
+		insertAfter(method, node, list(list(ln), instead));
+	}
+
+	/**
+	 * Skips the given pattern and executes the given list instead.
+	 * This is a "safer" alternative to straight up deleting the nodes.
+	 * @param method the method to add the nodes in
+	 * @param matcher the built matcher to find the pattern around which to append
+	 * @param instead the list of opcodes to use instead
+	 */
+	public static void skip(MethodNode method, PatternMatcher matcher, InsnList instead) {
+		LabelNode ln = new LabelNode();
+		insertBefore(method, matcher, jump(GOTO, ln));
+		insertAfter(method, matcher, list(list(ln), instead));
+	}
+
+	/**
+	 * Skips the given node and executes the given list instead.
+	 * This is a "safer" alternative to straight up deleting the node.
+	 * @param method the method to add the nodes in
+	 * @param node the node to skip
+	 * @param instead the list of opcodes to use instead
+	 */
+	public static void skip(MethodNode method, AbstractInsnNode node, AbstractInsnNode... instead) {
+		skip(method, node, list(instead));
+	}
+
+	/**
+	 * Skips the given pattern and executes the given list instead.
+	 * This is a "safer" alternative to straight up deleting the node.
+	 * @param method the method to add the nodes in
+	 * @param matcher the built matcher to find the pattern around which to append
+	 * @param instead the list of opcodes to use instead
+	 */
+	public static void skip(MethodNode method, PatternMatcher matcher, AbstractInsnNode... instead) {
+		skip(method, matcher, list(instead));
+	}
+
+	/**
 	 * Creates an {@link InsnList} from the given opcodes.
-	 * @param opodes the nodes to put in there
+	 * @param opcodes the opcodes to put in the list (must be valid candidates for {@link #node(int)})
 	 * @return the built list
 	 */
-	public static InsnList list(int... opodes) {
+	public static InsnList list(int... opcodes) {
 		InsnList seq = new InsnList();
-		for(int n : opodes) {
+		for(int n : opcodes) {
 			seq.add(node(n));
 		}
 
@@ -1009,6 +1054,44 @@ public class PatchUtils implements Opcodes {
 	}
 
 	/**
+	 * Creates an {@link InsnList} by chaining the given lists.
+	 * Note that this will consume the input lists, so don't expect them to still be functional after this call.
+	 * @param lists the lists of nodes to put in there
+	 * @return the built list
+	 */
+	@SafeVarargs
+	public static InsnList list(Iterable<AbstractInsnNode>... lists) {
+		InsnList seq = new InsnList();
+		for(Iterable<AbstractInsnNode> l : lists) {
+			for(AbstractInsnNode n : l) {
+				seq.add(n);
+			}
+		}
+
+		return seq;
+	}
+
+	/**
+	 * Appends the given nodes to the given list.
+	 * @param lst the list to append to
+	 * @param nodes the nodes to append
+	 * @return the given list, with the extra nodes appended
+	 */
+	public static InsnList list(InsnList lst, AbstractInsnNode... nodes) {
+		return list(lst, list(nodes));
+	}
+
+	/**
+	 * Appends the given opcodes to the given list.
+	 * @param lst the list to append to
+	 *  @param opcodes the opcodes to put in the list (must be valid candidates for {@link #node(int)})
+	 * @return the given list, with the extra nodes appended
+	 */
+	public static InsnList list(InsnList lst, int... opcodes) {
+		return list(lst, list(opcodes));
+	}
+
+	/**
 	 * Invokes an instanceof check on the last element on the stack.
 	 * @param proxy the proxy for the type to check
 	 * @return the created node
@@ -1027,12 +1110,66 @@ public class PatchUtils implements Opcodes {
 	}
 
 	/**
-	 * Invokes statically the given method proxy.
+	 * Calls the given method proxy with INVOKESTATIC.
 	 * @param mp the proxy
 	 * @return the created node
 	 */
 	public static MethodProxyInsnNode invokeStatic(MethodProxy mp) {
 		return new MethodProxyInsnNode(INVOKESTATIC, mp);
+	}
+
+	/**
+	 * Calls the given method proxy with INVOKESTATIC and the interface flag set to true.
+	 * @param mp the proxy
+	 * @return the created node
+	 */
+	public static MethodProxyInsnNode invokeStaticInterface(MethodProxy mp) {
+		return new MethodProxyInsnNode(INVOKESTATIC, mp, true);
+	}
+
+	/**
+	 * Calls the given method proxy with INVOKEVIRTUAL.
+	 * @param mp the proxy
+	 * @return the created node
+	 */
+	public static MethodProxyInsnNode invokeVirtual(MethodProxy mp) {
+		return new MethodProxyInsnNode(INVOKEVIRTUAL, mp);
+	}
+
+	/**
+	 * Calls the given method proxy with INVOKEVIRTUAL and the interface flag set to true.
+	 * @param mp the proxy
+	 * @return the created node
+	 */
+	public static MethodProxyInsnNode invokeVirtualInterface(MethodProxy mp) {
+		return new MethodProxyInsnNode(INVOKEVIRTUAL, mp, true);
+	}
+
+	/**
+	 * Calls the given method proxy with INVOKESPECIAL.
+	 * @param mp the proxy
+	 * @return the created node
+	 */
+	public static MethodProxyInsnNode invokeSpecial(MethodProxy mp) {
+		return new MethodProxyInsnNode(INVOKESPECIAL, mp);
+	}
+
+	/**
+	 * Calls the given method proxy with INVOKESPECIAL and the interface flag set to true.
+	 * @param mp the proxy
+	 * @return the created node
+	 */
+	public static MethodProxyInsnNode invokeSpecialInterface(MethodProxy mp) {
+		return new MethodProxyInsnNode(INVOKESPECIAL, mp, true);
+	}
+
+	/**
+	 * Calls the given method proxy with INVOKEINTERFACE.
+	 * @param mp the proxy
+	 * @return the created node
+	 */
+	public static MethodProxyInsnNode invokeInterface(MethodProxy mp) {
+		return new MethodProxyInsnNode(INVOKEINTERFACE, mp);
 	}
 
 	/**
@@ -1137,6 +1274,24 @@ public class PatchUtils implements Opcodes {
 	}
 
 	/**
+	 * Loads the long in the local variable with the given index.
+	 * @param index the index of the variable
+	 * @return the created node
+	 */
+	public static VarInsnNode lload(int index) {
+		return new VarInsnNode(LLOAD, index);
+	}
+
+	/**
+	 * Stores a long value in the local variable with the given index.
+	 * @param index the index of the variable
+	 * @return the created node
+	 */
+	public static VarInsnNode lstore(int index) {
+		return new VarInsnNode(LSTORE, index);
+	}
+
+	/**
 	 * Stores an integer value in the local variable with the given index.
 	 * @param index the index of the variable
 	 * @return the created node
@@ -1151,7 +1306,7 @@ public class PatchUtils implements Opcodes {
 	 * @return the created node
 	 */
 	public static JumpInsnNode jumpIfTrue(LabelNode l) {
-		return new JumpInsnNode(IFNE, l);
+	return jump(IFNE, l);
 	}
 
 	/**
@@ -1160,7 +1315,17 @@ public class PatchUtils implements Opcodes {
 	 * @return the created node
 	 */
 	public static JumpInsnNode jumpIfFalse(LabelNode l) {
-		return new JumpInsnNode(IFEQ, l);
+		return jump(IFEQ, l);
+	}
+
+	/**
+	 * Creates a jump node with the given opcode.
+	 * @param opcode the opcode to use (assumed to be a valid jump opcode)
+	 * @param l the label to jump to
+	 * @return the created node
+	 */
+	public static JumpInsnNode jump(int opcode, LabelNode l) {
+		return new JumpInsnNode(opcode, l);
 	}
 
 	/**

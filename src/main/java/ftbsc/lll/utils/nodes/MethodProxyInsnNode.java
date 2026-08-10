@@ -20,4 +20,16 @@ public class MethodProxyInsnNode extends MethodInsnNode {
 	public MethodProxyInsnNode(int opcode, MethodProxy m) {
 		super(opcode,	m.parent.internalName, m.name, m.descriptor);
 	}
+
+	/**
+	 * Constructs a new {@link MethodInsnNode} starting
+	 * from a {@link MethodProxy}.
+	 * @param opcode the opcode, must be one of INVOKEVIRTUAL,
+	 *               INVOKESPECIAL, INVOKESTATIC or INVOKEINTERFACE
+	 * @param m a {@link MethodProxy} representing the method to call
+	 * @param itf the interface flag
+	 */
+	public MethodProxyInsnNode(int opcode, MethodProxy m, boolean itf) {
+		super(opcode,	m.parent.internalName, m.name, m.descriptor, itf);
+	}
 }
