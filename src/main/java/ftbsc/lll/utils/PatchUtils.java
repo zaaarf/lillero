@@ -1137,15 +1137,6 @@ public class PatchUtils implements Opcodes {
 	}
 
 	/**
-	 * Calls the given method proxy with INVOKEVIRTUAL and the interface flag set to true.
-	 * @param mp the proxy
-	 * @return the created node
-	 */
-	public static MethodProxyInsnNode invokeVirtualInterface(MethodProxy mp) {
-		return new MethodProxyInsnNode(INVOKEVIRTUAL, mp, true);
-	}
-
-	/**
 	 * Calls the given method proxy with INVOKESPECIAL.
 	 * @param mp the proxy
 	 * @return the created node
