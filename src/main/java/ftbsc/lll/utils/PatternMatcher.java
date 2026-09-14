@@ -401,7 +401,7 @@ public class PatternMatcher {
 					return args[0] instanceof Integer
 						&& tab.min == (Integer) args[0]
 						&& args[1] instanceof Integer
-						&& tab.min == (Integer) args[1]
+						&& tab.max == (Integer) args[1]
 						&& COMPARE_LABELS.test(args[2], tab.dflt)
 						&& matchList(3, args, tab.labels.toArray(), true, COMPARE_LABELS);
 				case AbstractInsnNode.VAR_INSN:
