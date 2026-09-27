@@ -234,6 +234,127 @@ public class PatternMatcher {
 		}
 
 		/**
+		 * Matches a single node.
+		 * A node is considered to be matching when it is literally the same instance,
+		 * or its type, opcode and arguments are the same.
+		 * @param node the node to match
+		 * @return the builder's state after the operation
+		 * @throws IllegalArgumentException if an unsupported (label, linenumber, frame, or unknown) node is passed
+		 */
+		public Builder node(AbstractInsnNode node) {
+			return this.check(match -> {
+				if(node == match) return true;
+				if(node == null || match == null) return false;
+				if(node.getType() != match.getType()) return false;
+				if(node.getOpcode() != match.getOpcode()) return false;
+				switch(node.getType()) {
+					case AbstractInsnNode.INSN:
+						return true;
+					case AbstractInsnNode.INT_INSN:
+						return matchNode(match, node.getOpcode(), ((IntInsnNode) node).operand);
+					case AbstractInsnNode.VAR_INSN:
+						return matchNode(match, node.getOpcode(), ((VarInsnNode) node).var);
+					case AbstractInsnNode.TYPE_INSN:
+						return matchNode(match, node.getOpcode(), ((TypeInsnNode) node).desc);
+					case AbstractInsnNode.FIELD_INSN:
+						return matchNode(
+							match,
+							node.getOpcode(),
+							((FieldInsnNode) node).owner,
+							((FieldInsnNode) node).name,
+							((FieldInsnNode) node).desc
+						);
+					case AbstractInsnNode.METHOD_INSN:
+						return matchNode(
+							match,
+							node.getOpcode(),
+							((MethodInsnNode) node).owner,
+							((MethodInsnNode) node).name,
+							((MethodInsnNode) node).desc,
+							((MethodInsnNode) node).itf
+						);
+					case AbstractInsnNode.INVOKE_DYNAMIC_INSN:
+						return matchNode(
+							match,
+							node.getOpcode(),
+							((InvokeDynamicInsnNode) node).name,
+							((InvokeDynamicInsnNode) node).desc,
+							((InvokeDynamicInsnNode) node).bsm,
+							((InvokeDynamicInsnNode) node).bsmArgs
+						);
+					case AbstractInsnNode.JUMP_INSN:
+						return matchNode(match, node.getOpcode(), ((JumpInsnNode) node).label);
+					case AbstractInsnNode.LDC_INSN:
+						return matchNode(match, node.getOpcode(), ((LdcInsnNode) node).cst);
+					case AbstractInsnNode.IINC_INSN:
+						return matchNode(match, node.getOpcode(), ((IincInsnNode) node).var, ((IincInsnNode) node).incr);
+					case AbstractInsnNode.TABLESWITCH_INSN:
+						return matchNode(
+							match,
+							node.getOpcode(),
+							((TableSwitchInsnNode) node).min,
+							((TableSwitchInsnNode) node).max,
+							((TableSwitchInsnNode) node).dflt,
+							((TableSwitchInsnNode) node).labels.toArray()
+						);
+					case AbstractInsnNode.LOOKUPSWITCH_INSN:
+						return matchNode(
+							match,
+							node.getOpcode(),
+							((LookupSwitchInsnNode) node).dflt,
+							((LookupSwitchInsnNode) node).keys,
+							((LookupSwitchInsnNode) node).labels
+						);
+					case AbstractInsnNode.MULTIANEWARRAY_INSN:
+						return matchNode(
+							match,
+							node.getOpcode(),
+							((MultiANewArrayInsnNode) node).desc,
+							((MultiANewArrayInsnNode) node).dims
+						);
+				}
+
+				// if it got here, it failed
+				String type;
+				switch(node.getType()) {
+					case AbstractInsnNode.LABEL:
+						type = "label";
+						break;
+					case AbstractInsnNode.FRAME:
+						type = "frame";
+						break;
+					case AbstractInsnNode.LINE:
+						type = "line";
+						break;
+					default:
+						type = "unknown";
+						break;
+				}
+
+				throw new IllegalArgumentException(String.format(
+					"A node of type %s (%d) cannot be used to match!",
+					type,
+					node.getType()
+				));
+			});
+		}
+
+		/**
+		 * Matches a list of nodes.
+		 * @param nodes list of opcodes to match
+		 * @return the builder's state after the operation
+		 * @see #node(AbstractInsnNode)  for details on how it works
+		 */
+		public Builder nodes(AbstractInsnNode... nodes) {
+			Builder res = this;
+			for(AbstractInsnNode n : nodes) {
+				res = this.node(n);
+			}
+
+			return res;
+		}
+
+		/**
 		 * Matches the given opcode and the exact given arguments.
 		 * Partial argument matches are not supported: all arguments must be provided for
 		 * the check to succeed.
@@ -398,10 +519,8 @@ public class PatternMatcher {
 				case AbstractInsnNode.TABLESWITCH_INSN:
 					if(args.length < 4) return false;
 					TableSwitchInsnNode tab = (TableSwitchInsnNode) i;
-					return args[0] instanceof Integer
-						&& tab.min == (Integer) args[0]
-						&& args[1] instanceof Integer
-						&& tab.max == (Integer) args[1]
+					return args[0] instanceof Integer && tab.min == (Integer) args[0]
+						&& args[1] instanceof Integer && tab.max == (Integer) args[1]
 						&& COMPARE_LABELS.test(args[2], tab.dflt)
 						&& matchList(3, args, tab.labels.toArray(), true, COMPARE_LABELS);
 				case AbstractInsnNode.VAR_INSN:
